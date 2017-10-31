@@ -1,0 +1,19 @@
+{
+  "name": "fit-html",
+  "version": "0.1.0",
+  "description": "10kb functional Web Components without bloat",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/Festify/skedux",
+  "author": "Festify Dev Team <mail+git@festify.rocks>",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "typescript": "^2.5.3"
+  },
+  "dependencies": {
+    "lit-html": "^0.7.1",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0"
+  }
+}
