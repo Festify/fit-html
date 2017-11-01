@@ -1,7 +1,7 @@
 import camelize from 'lodash-es/camelCase';
 import kebapize from 'lodash-es/kebabCase';
 
-import { FitElement, MapDispatchToProps, MapStateToPropsFn } from './connect.js';
+import { FitElement, MapDispatchToProps, MapStateToPropsFn } from './connect';
 
 export interface AttributeDescriptors {
     [key: string]: typeof String | typeof Boolean | typeof Number;

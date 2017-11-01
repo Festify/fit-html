@@ -1,7 +1,7 @@
 import { html, render, TemplateResult } from 'lit-html';
 import { Dispatch, Store, Unsubscribe } from 'redux';
 
-import { ProviderElement } from './provider.js';
+import { ProviderElement } from './provider';
 
 export interface MapStateToPropsFn<S, P, OP> {
     (state: S, ownProps: OP): Partial<P>;

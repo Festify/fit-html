@@ -1,7 +1,7 @@
-export { default as connect } from './connect.js';
-export { default as createProvider } from './provider.js';
-export { default as withExtended } from './with-extended.js';
-export { default as withProps } from './with-props.js';
+export { default as connect } from './connect';
+export { default as createProvider } from './provider';
+export { default as withExtended } from './with-extended';
+export { default as withProps } from './with-props';
 
-export * from './connect.js';
-export * from './provider.js';
+export * from './connect';
+export * from './provider';
