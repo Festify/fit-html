@@ -18,6 +18,7 @@ export interface Renderer<P> {
 
 export interface FitElement<S, P> extends HTMLElement {
     enqueueRender(): void;
+
     getStore(): Store<S>;
 }
 
