@@ -31,7 +31,7 @@ function isProvider<S>(elem: HTMLElement): elem is ProviderElement<S> {
 export default function connect<S, P, OP = {}>(
     mapStateToProps: MapStateToPropsFn<S, P, OP>,
     mapDispatchToProps: MapDispatchToProps<S, P, OP>,
-    renderer: (props: P) => TemplateResult
+    templateFn: (props: P) => TemplateResult
 ): FitElement<S, P, OP> {
     return class extends HTMLElement {
         _renderEnqueued: boolean = false;
@@ -39,7 +39,7 @@ export default function connect<S, P, OP = {}>(
         _unsubscribe: Unsubscribe;
 
         get templateFunction(): (props: P) => TemplateResult {
-            return renderer;
+            return templateFn;
         }
 
         connectedCallback() {
@@ -94,7 +94,7 @@ export default function connect<S, P, OP = {}>(
         }
 
         render() {
-            render(renderer(this.getProps()), this.shadowRoot!);
+            render(templateFn(this.getProps()), this.shadowRoot!);
         }
     } as any;
 }
