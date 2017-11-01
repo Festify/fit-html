@@ -73,8 +73,8 @@ export default function connect<S, P, OP = {}>(
                 return this._store;
             }
 
-            let node: HTMLElement | null = this;
-            while (node = node.parentElement) {
+            let node: any = this;
+            while (node = node.parentNode || node.host) {
                 if (isProvider<S>(node)) {
                     this._store = node.reduxStore;
                     return this._store;
