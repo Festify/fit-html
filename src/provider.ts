@@ -1,6 +1,6 @@
 import { Store } from 'redux';
 
-export interface ProviderElement<S> extends HTMLElement {
+export interface ProviderElement<S> extends HTMLElement, Function {
     reduxStore: Store<S>;
 }
 
