@@ -25,7 +25,7 @@ export interface FitElement<S, P, OP> extends HTMLElement {
 export { html };
 
 function isProvider<S>(elem: HTMLElement): elem is ProviderElement<S> {
-    return !!(elem as any).reduxStore;
+    return !!(elem as ProviderElement<S>).reduxStore;
 }
 
 export default function connect<S, P, OP = {}>(
