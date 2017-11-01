@@ -1,6 +1,6 @@
 import { html, render } from 'lit-html/lib/lit-extended';
 
-import { FitElement, MapDispatchToProps, MapStateToPropsFn } from './connect';
+import { FitElement } from './connect';
 
 export { html };
 
