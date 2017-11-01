@@ -1,47 +1,51 @@
-import { TemplateResult } from 'lit-html';
-import { render } from 'lit-html';
+import { html, render, TemplateResult } from 'lit-html';
 import { Dispatch, Store, Unsubscribe } from 'redux';
 
 import { ProviderElement } from './provider.js';
 
-export interface MapStateToPropsFn<S, P> {
-    (state: S): Partial<P>;
+export interface MapStateToPropsFn<S, P, OP> {
+    (state: S, ownProps: OP): Partial<P>;
 }
 
-export interface MapDispatchToProps<S, P> {
-    (dispatch: Dispatch<S>): Partial<P>;
+export interface MapDispatchToProps<S, P, OP> {
+    (dispatch: Dispatch<S>, ownProps: OP): Partial<P>;
 }
 
-export interface Renderer<P> {
-    (props: P): TemplateResult;
-}
+export interface FitElement<S, P, OP> extends HTMLElement {
+    new(...args: any[]): FitElement<S, P, OP>;
 
-export interface FitElement<S, P> extends HTMLElement {
-    enqueueRender(): void;
+    templateFunction: (props: P) => TemplateResult;
 
+    enqueueRender();
     getStore(): Store<S>;
+    getProps(ownProps?: OP): P;
+    render();
 }
+
+export { html };
 
 function isProvider<S>(elem: HTMLElement): elem is ProviderElement<S> {
     return !!(elem as any).reduxStore;
 }
 
-export default function connect<S, P>(
-    mapStateToProps: MapStateToPropsFn<S, P>,
-    mapDispatchToProps: MapDispatchToProps<S, P>,
-    renderer: Renderer<P>
-): FitElement<S, P> {
+export default function connect<S, P, OP = {}>(
+    mapStateToProps: MapStateToPropsFn<S, P, OP>,
+    mapDispatchToProps: MapDispatchToProps<S, P, OP>,
+    renderer: (props: P) => TemplateResult
+): FitElement<S, P, OP> {
     return class extends HTMLElement {
-        _dispatch: Partial<P>;
         _renderEnqueued: boolean = false;
         _store: Store<S>;
         _unsubscribe: Unsubscribe;
+
+        get templateFunction(): (props: P) => TemplateResult {
+            return renderer;
+        }
 
         connectedCallback() {
             this.attachShadow({ mode: 'open' });
 
             const store = this.getStore();
-            this._dispatch = mapDispatchToProps(store.dispatch);
             this._unsubscribe = store.subscribe(() => this.enqueueRender());
 
             this.enqueueRender();
@@ -60,7 +64,7 @@ export default function connect<S, P>(
             Promise.resolve()
                 .then(() => {
                     this._renderEnqueued = false;
-                    this._render();
+                    this.render();
                 });
         }
 
@@ -80,14 +84,17 @@ export default function connect<S, P>(
             throw new Error("Missing redux store.\nSeems like you're using fit-html without a redux store. Please use the provider component to provide one to the element tree.");
         }
 
-        _render() {
-            const props = Object.assign(
+        getProps(ownProps = {} as OP): P {
+            const store = this.getStore();
+            return Object.assign(
                 {},
-                mapStateToProps(this.getStore().getState()),
-                this._dispatch
+                mapStateToProps(store.getState(), ownProps),
+                mapDispatchToProps(store.dispatch, ownProps)
             ) as P;
+        }
 
-            render(renderer(props), this.shadowRoot!);
+        render() {
+            render(renderer(this.getProps()), this.shadowRoot!);
         }
     } as any;
 }

@@ -9,11 +9,16 @@
   "license": "MIT",
   "private": false,
   "devDependencies": {
+    "@types/lodash-es": "^4.17.0",
     "typescript": "^2.5.3"
   },
   "dependencies": {
     "lit-html": "^0.7.1",
+    "lodash-es": "^4.17.4",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0"
+  },
+  "scripts": {
+    "build": "tsc"
   }
 }
