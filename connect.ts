@@ -42,6 +42,8 @@ export default function connect<S, P>(
             const store = this.getStore();
             this._dispatch = mapDispatchToProps(store.dispatch);
             this._unsubscribe = store.subscribe(() => this.enqueueRender());
+
+            this.enqueueRender();
         }
 
         disconnectedCallback() {
