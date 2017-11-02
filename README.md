@@ -1,5 +1,7 @@
 # 💪 fit-html
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/Festify/fit-html.svg)](https://greenkeeper.io/)
+
 5KB functional web components without bloat.
 
 ## Overview
