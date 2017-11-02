@@ -24,10 +24,6 @@ export interface FitElement<S, P, OP> extends HTMLElement {
 
 export { html };
 
-function isProvider<S>(elem: HTMLElement): elem is ProviderElement<S> {
-    return !!(elem as ProviderElement<S>).reduxStore;
-}
-
 export default function connect<S, P, OP = {}>(
     mapStateToProps: MapStateToPropsFn<S, P, OP>,
     mapDispatchToProps: MapDispatchToProps<S, P, OP>,
@@ -73,10 +69,21 @@ export default function connect<S, P, OP = {}>(
                 return this._store;
             }
 
+            function isProvider<S>(elem: any): elem is ProviderElement<S> {
+                return elem && !!(elem as ProviderElement<S>).reduxStore;
+            }
+
+            function isReduxStore<S>(obj: any): obj is Store<S> {
+                return obj && obj.getState && obj.dispatch && obj.subscribe && obj.replaceReducer;
+            }
+
             let node: any = this;
             while (node = node.parentNode || node.host) {
                 if (isProvider<S>(node)) {
                     this._store = node.reduxStore;
+                    return this._store;
+                } else if (isReduxStore<S>(node._store)) {
+                    this._store = node._store;
                     return this._store;
                 }
             }
