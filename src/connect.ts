@@ -4,11 +4,11 @@ import { Dispatch, Store, Unsubscribe } from 'redux';
 import { ProviderElement } from './provider';
 
 export interface MapStateToPropsFn<S, P, OP> {
-    (state: S, ownProps: OP): Partial<P>;
+    (state: S, ownProps: OP): P;
 }
 
 export interface MapDispatchToProps<S, P, OP> {
-    (dispatch: Dispatch<S>, ownProps: OP): Partial<P>;
+    (dispatch: Dispatch<S>, ownProps: OP): P;
 }
 
 export interface FitElement<S, P, OP> extends HTMLElement {
@@ -24,17 +24,17 @@ export interface FitElement<S, P, OP> extends HTMLElement {
 
 export { html };
 
-export default function connect<S, P, OP = {}>(
-    mapStateToProps: MapStateToPropsFn<S, P, OP>,
-    mapDispatchToProps: MapDispatchToProps<S, P, OP>,
-    templateFn: (props: P) => TemplateResult
-): FitElement<S, P, OP> {
+export default function connect<S, SP, DP, OP = {}>(
+    mapStateToProps: MapStateToPropsFn<S, SP, OP>,
+    mapDispatchToProps: MapDispatchToProps<S, DP, OP>,
+    templateFn: (props: SP & DP) => TemplateResult
+): FitElement<S, SP & DP, OP> {
     return class extends HTMLElement {
         _renderEnqueued: boolean = false;
         _store: Store<S>;
         _unsubscribe: Unsubscribe;
 
-        get templateFunction(): (props: P) => TemplateResult {
+        get templateFunction(): (props: SP & DP) => TemplateResult {
             return templateFn;
         }
 
@@ -91,13 +91,13 @@ export default function connect<S, P, OP = {}>(
             throw new Error("Missing redux store.\nSeems like you're using fit-html without a redux store. Please use the provider component to provide one to the element tree.");
         }
 
-        getProps(ownProps = {} as OP): P {
+        getProps(ownProps = {} as OP): SP & DP {
             const store = this.getStore();
             return Object.assign(
                 {},
                 mapStateToProps(store.getState(), ownProps),
                 mapDispatchToProps(store.dispatch, ownProps)
-            ) as P;
+            ) as SP & DP;
         }
 
         render() {
