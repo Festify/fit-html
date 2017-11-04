@@ -3,6 +3,9 @@ import kebapize from 'lodash-es/kebabCase';
 
 import { FitElement } from './connect';
 
+/**
+ * Attribute observer configuration with *camelized* attribute names.
+ */
 export interface AttributeDescriptors {
     [key: string]: typeof String | typeof Boolean | typeof Number;
 }
@@ -11,6 +14,18 @@ export type AttributeValues<A> = {
     [K in keyof A]: boolean | string | number;
 };
 
+/**
+ * Wraps the given 💪-element to react to attribute and property changes.
+ *
+ * Use this if you want to make use of props passed to you from the outside.
+ * Without this mixin, the ownProps parameters from mapStateToProps and
+ * mapDispatchToProps will just be empty objects.
+ *
+ * @param {FitElement<S, P, OP>} Base The base 💪-element.
+ * @param {A} attributeDescriptors Attribute descriptors (with camelized attribute names) describing which attributes and properties to listen for changes on.
+ * @returns {FitElement<S, P, AttributeValues<A extends AttributeDescriptors>>} A subclass of the given {@link Base} that listens for changes on the given properties and attributes.
+ * @template S, P, A, OP
+ */
 export default function withProps<S, P, A extends AttributeDescriptors>(
     Base: FitElement<S, P, any>,
     attributeDescriptors: A

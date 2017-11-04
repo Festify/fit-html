@@ -1,9 +1,21 @@
 import { Store } from 'redux';
 
+/**
+ * A 💪 redux store provider element.
+ */
 export interface ProviderElement<S> extends HTMLElement, Function {
     reduxStore: Store<S>;
 }
 
+/**
+ * Creates a new redux store provider element using the given store.
+ *
+ * All 💪-elements must be a child of this element.
+ *
+ * @param {Store<S>} store The redux store.
+ * @returns {ProviderElement<S>} The redux store provider element.
+ * @template S
+ */
 export default function createProvider<S>(store: Store<S>): ProviderElement<S> {
     return class extends HTMLElement {
         reduxStore: Store<S> = store;
