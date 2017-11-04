@@ -46,6 +46,8 @@ export default function withProps<S, P, A extends AttributeDescriptors>(
             const obj = {};
             for (const propName of observedAttrs) {
                 obj[propName] = obj[camelize(propName)] = {
+                    configurable: true,
+                    enumerable: true,
                     get: () => this._ownProps[propName],
                     set: val => this._ownProps[propName] = val
                 };
