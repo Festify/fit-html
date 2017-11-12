@@ -1,10 +1,10 @@
 {
   "name": "fit-html",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "5KB functional Web Components without bloat",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "repository": "https://github.com/Festify/skedux",
+  "repository": "https://github.com/Festify/fit-html",
   "author": "Festify Dev Team <mail+git@festify.rocks>",
   "license": "MIT",
   "private": false,
