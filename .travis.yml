@@ -12,6 +12,5 @@ deploy:
     email: $NPM_DPL_EMAIL
     api_key: $NPM_DPL_TOKEN
     skip_cleanup: true
-    tag: next
     on:
       tags: true
