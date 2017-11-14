@@ -29,6 +29,9 @@ export interface FitElement<S, P, OP> extends HTMLElement {
      */
     templateFunction: (props: P) => TemplateResult;
 
+    connectedCallback();
+    disconnectedCallback();
+
     /**
      * Enqueues the component for rendering at microtask timing.
      *
