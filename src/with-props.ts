@@ -27,7 +27,7 @@ export type AttributeValues<A> = {
  * @template S, P, A, OP
  */
 export default function withProps<S, P, A extends AttributeDescriptors>(
-    Base: FitElement<S, P, any>,
+    Base: FitElement<S, P, AttributeValues<A>>,
     attributeDescriptors: A
 ): FitElement<S, P, AttributeValues<A>> {
     const observedAttrs = Object.keys(attributeDescriptors).map(kebapize);
