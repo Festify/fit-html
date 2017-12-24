@@ -1,5 +1,6 @@
 import { html, render, TemplateResult } from 'lit-html';
-import { Dispatch, Store, Unsubscribe } from 'redux';
+import isFunction from 'lodash-es/isFunction';
+import { bindActionCreators, ActionCreatorsMapObject, Dispatch, Store, Unsubscribe } from 'redux';
 
 import { ProviderElement } from './provider';
 
@@ -7,7 +8,7 @@ export interface MapStateToPropsFn<S, P, OP> {
     (state: S, ownProps: OP): P;
 }
 
-export interface MapDispatchToProps<S, P, OP> {
+export interface MapDispatchToPropsFn<S, P, OP> {
     (dispatch: Dispatch<S>, ownProps: OP): P;
 }
 
@@ -68,17 +69,18 @@ export { html };
  * Creates a 💪 web component connected to the redux store.
  *
  * @param {MapStateToPropsFn<S, SP, OP>} mapStateToProps The MapStateToProps function. If you want to use ownProps, pass the return value through the {@link withProps} mixin.
- * @param {MapDispatchToProps<S, DP, OP>} mapDispatchToProps The MapStateToDispatch function. If you want to use ownProps, pass the return value through the {@link withProps} mixin.
+ * @param {MapDispatchToPropsFn<S, DP, OP>} mapDispatchToProps The MapStateToDispatch function. If you want to use ownProps, pass the return value through the {@link withProps} mixin.
  * @param {(props: (SP & DP)) => TemplateResult} templateFn The 🔥-html templating function.
  * @returns {FitElement<S, SP & DP, OP>} A newly created 💪-element.
  * @template S, SP, DP, OP
  */
-export default function connect<S, SP, DP, OP = {}>(
+export default function connect<S, SP, DP extends ActionCreatorsMapObject, OP = {}>(
     mapStateToProps: MapStateToPropsFn<S, SP, OP>,
-    mapDispatchToProps: MapDispatchToProps<S, DP, OP>,
+    mapDispatchToProps: MapDispatchToPropsFn<S, DP, OP> | DP,
     templateFn: (props: SP & DP) => TemplateResult
 ): FitElement<S, SP & DP, OP> {
     return class extends HTMLElement {
+        _preparedDispatch: MapDispatchToPropsFn<S, DP, OP> | DP;
         _renderEnqueued: boolean = false;
         _store: Store<S>;
         _unsubscribe: Unsubscribe;
@@ -91,6 +93,9 @@ export default function connect<S, SP, DP, OP = {}>(
             this.attachShadow({ mode: 'open' });
 
             const store = this.getStore();
+            this._preparedDispatch = isFunction(mapDispatchToProps)
+                ? mapDispatchToProps
+                : bindActionCreators(mapDispatchToProps, store.dispatch);
             this._unsubscribe = store.subscribe(() => this.enqueueRender());
 
             this.enqueueRender();
@@ -145,7 +150,9 @@ export default function connect<S, SP, DP, OP = {}>(
             return Object.assign(
                 {},
                 mapStateToProps(store.getState(), ownProps),
-                mapDispatchToProps(store.dispatch, ownProps)
+                isFunction(this._preparedDispatch)
+                    ? this._preparedDispatch(store.dispatch, ownProps)
+                    : this._preparedDispatch
             ) as SP & DP;
         }
 
