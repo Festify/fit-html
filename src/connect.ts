@@ -74,13 +74,13 @@ export { html };
  * @returns {FitElement<S, SP & DP, OP>} A newly created 💪-element.
  * @template S, SP, DP, OP
  */
-export default function connect<S, SP, DP extends ActionCreatorsMapObject, OP = {}>(
+export default function connect<S, SP, DP, OP = {}>(
     mapStateToProps: MapStateToPropsFn<S, SP, OP>,
     mapDispatchToProps: MapDispatchToPropsFn<S, DP, OP> | DP,
     templateFn: (props: SP & DP) => TemplateResult
 ): FitElement<S, SP & DP, OP> {
     return class extends HTMLElement {
-        _preparedDispatch: MapDispatchToPropsFn<S, DP, OP> | DP;
+        _preparedDispatch: MapDispatchToPropsFn<S, DP, OP> | ActionCreatorsMapObject;
         _renderEnqueued: boolean = false;
         _store: Store<S>;
         _unsubscribe: Unsubscribe;
@@ -95,7 +95,7 @@ export default function connect<S, SP, DP extends ActionCreatorsMapObject, OP = 
             const store = this.getStore();
             this._preparedDispatch = isFunction(mapDispatchToProps)
                 ? mapDispatchToProps
-                : bindActionCreators(mapDispatchToProps, store.dispatch);
+                : bindActionCreators(mapDispatchToProps as any as ActionCreatorsMapObject, store.dispatch);
             this._unsubscribe = store.subscribe(() => this.enqueueRender());
 
             this.enqueueRender();
