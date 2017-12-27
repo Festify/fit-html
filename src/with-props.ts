@@ -10,6 +10,10 @@ export interface AttributeDescriptors {
     [key: string]: typeof String | typeof Number | typeof Boolean | any;
 }
 
+export type AttributeValues<A> = {
+    [key in keyof A]: string | number | boolean | any;
+};
+
 /**
  * Wraps the given 💪-element to react to attribute and property changes.
  *
@@ -23,14 +27,14 @@ export interface AttributeDescriptors {
  * @template S, P, A, OP
  */
 export default function withProps<S, P, A extends AttributeDescriptors>(
-    Base: FitElement<S, P, A>,
+    Base: FitElement<S, P, AttributeValues<A>>,
     attributeDescriptors: A
-): FitElement<S, P, A> {
+): FitElement<S, P, AttributeValues<A>> {
     const observedAttrs = Object.keys(attributeDescriptors).map(kebapize);
 
     return class extends Base {
         private _attributeDescriptors: A = attributeDescriptors;
-        private _ownProps: A = {} as A;
+        private _ownProps: AttributeValues<A> = {} as AttributeValues<A>;
 
         static get observedAttributes(): string[] {
             return observedAttrs;
