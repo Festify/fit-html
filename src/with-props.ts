@@ -1,17 +1,28 @@
-import camelize from 'lodash-es/camelCase';
-import kebapize from 'lodash-es/kebabCase';
-
 import { FitElement } from './connect';
 
+declare const process: any;
+
 /**
- * Attribute observer configuration with *camelized* attribute names.
+ * A value constructor.
+ */
+export type Constructor = (value: string) => any;
+
+/**
+ * Attribute observer configuration.
+ *
+ * If a constructor function is present, it will be invoked when an
+ * attribute changes with the attribute's new value. If null is passed
+ * or a property is set the value will be left untouched.
  */
 export interface AttributeDescriptors {
-    [key: string]: typeof String | typeof Number | typeof Boolean | typeof Object;
+    [key: string]: Constructor | null;
 }
 
+/**
+ * Attribute values with extracted property values.
+ */
 export type AttributeValues<A> = {
-    [key in keyof A]: string | number | boolean | object;
+    [key in keyof A]: any;
 };
 
 /**
@@ -22,18 +33,26 @@ export type AttributeValues<A> = {
  * mapDispatchToProps will just be empty objects.
  *
  * @param {FitElement<S, P, OP>} Base The base 💪-element.
- * @param {A} attributeDescriptors Attribute descriptors (with camelized attribute names) describing which attributes and properties to listen for changes on.
+ * @param {A} attributeDescriptors Attribute descriptors describing which attributes and properties to listen for changes on.
  * @returns {FitElement<S, P, A>} A subclass of the given {@link Base} that listens for changes on the given properties and attributes.
  * @template S, P, A, OP
  */
-export default function withProps<S, P, A extends AttributeDescriptors>(
+export default function withProps<S, P, OP, A extends AttributeDescriptors>(
     Base: FitElement<S, P, AttributeValues<A>>,
-    attributeDescriptors: A
+    attributeDescriptors: A,
 ): FitElement<S, P, AttributeValues<A>> {
-    const observedAttrs = Object.keys(attributeDescriptors).map(kebapize);
+    if (process && process.env.NODE_ENV !== 'production') {
+        const hasCasedAttrs = Object.keys(attributeDescriptors)
+            .some(k => attributeDescriptors[k] !== null && /[A-Z]/.test(k));
+
+        if (hasCasedAttrs) {
+            console.warn("💪-html: DOM attribute changes cannot be detected for property names with uppercase letters. Use lowercase property names to fix this.");
+        }
+    }
+
+    const observedAttrs = Object.keys(attributeDescriptors);
 
     return class extends Base {
-        private _attributeDescriptors: A = attributeDescriptors;
         private _ownProps: AttributeValues<A> = {} as AttributeValues<A>;
 
         static get observedAttributes(): string[] {
@@ -45,7 +64,7 @@ export default function withProps<S, P, A extends AttributeDescriptors>(
 
             const obj = {};
             for (const propName of observedAttrs) {
-                obj[propName] = obj[camelize(propName)] = {
+                obj[propName] = {
                     configurable: true,
                     enumerable: true,
                     get: () => this._ownProps[propName],
@@ -64,25 +83,19 @@ export default function withProps<S, P, A extends AttributeDescriptors>(
         }
 
         attributeChangedCallback(name: string, _: string, newValue: string) {
-            if (observedAttrs.indexOf(name) === -1) {
+            if (!(name in attributeDescriptors)) {
                 return;
             }
 
-            const realName = camelize(name);
-            const type = this._attributeDescriptors[realName];
+            const type = attributeDescriptors[name];
 
-            let value;
-            if (type === Boolean) {
-                value = newValue !== null;
-            } else if (type === Number) {
-                value = Number(newValue);
-            } else if (type === String) {
-                value = String(newValue);
+            if (!type) {
+                this[name] = newValue;
+            } else if (type === Boolean) {
+                this[name] = newValue !== null;
             } else {
-                value = newValue;
+                this[name] = type(newValue);
             }
-
-            this[realName] = value;
         }
 
         getProps(): P {
