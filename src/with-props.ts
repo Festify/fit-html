@@ -7,12 +7,8 @@ import { FitElement } from './connect';
  * Attribute observer configuration with *camelized* attribute names.
  */
 export interface AttributeDescriptors {
-    [key: string]: typeof String | typeof Boolean | typeof Number;
+    [key: string]: typeof String | typeof Number | typeof Boolean | any;
 }
-
-export type AttributeValues<A> = {
-    [K in keyof A]: boolean | string | number;
-};
 
 /**
  * Wraps the given 💪-element to react to attribute and property changes.
@@ -23,18 +19,18 @@ export type AttributeValues<A> = {
  *
  * @param {FitElement<S, P, OP>} Base The base 💪-element.
  * @param {A} attributeDescriptors Attribute descriptors (with camelized attribute names) describing which attributes and properties to listen for changes on.
- * @returns {FitElement<S, P, AttributeValues<A extends AttributeDescriptors>>} A subclass of the given {@link Base} that listens for changes on the given properties and attributes.
+ * @returns {FitElement<S, P, A>} A subclass of the given {@link Base} that listens for changes on the given properties and attributes.
  * @template S, P, A, OP
  */
 export default function withProps<S, P, A extends AttributeDescriptors>(
-    Base: FitElement<S, P, AttributeValues<A>>,
+    Base: FitElement<S, P, A>,
     attributeDescriptors: A
-): FitElement<S, P, AttributeValues<A>> {
+): FitElement<S, P, A> {
     const observedAttrs = Object.keys(attributeDescriptors).map(kebapize);
 
     return class extends Base {
         private _attributeDescriptors: A = attributeDescriptors;
-        private _ownProps: AttributeValues<A> = {} as AttributeValues<A>;
+        private _ownProps: A = {} as A;
 
         static get observedAttributes(): string[] {
             return observedAttrs;
@@ -49,7 +45,14 @@ export default function withProps<S, P, A extends AttributeDescriptors>(
                     configurable: true,
                     enumerable: true,
                     get: () => this._ownProps[propName],
-                    set: val => this._ownProps[propName] = val
+                    set: val => {
+                        if (this._ownProps[propName] === val) {
+                            return;
+                        }
+
+                        this._ownProps[propName] = val;
+                        this.enqueueRender();
+                    }
                 };
             }
 
@@ -63,16 +66,19 @@ export default function withProps<S, P, A extends AttributeDescriptors>(
 
             const realName = camelize(name);
             const type = this._attributeDescriptors[realName];
-            const value = (type === Boolean)
-                ? (newValue !== null)
-                : this._attributeDescriptors[realName](newValue);
 
-            if (value === this._ownProps[realName]) {
-                return;
+            let value;
+            if (type === Boolean) {
+                value = newValue !== null;
+            } else if (type === Number) {
+                value = Number(newValue);
+            } else if (type === String) {
+                value = String(newValue);
+            } else {
+                value = newValue;
             }
 
-            this._ownProps[realName] = value;
-            this.enqueueRender();
+            this[realName] = value;
         }
 
         getProps(): P {
