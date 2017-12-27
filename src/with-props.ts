@@ -7,11 +7,11 @@ import { FitElement } from './connect';
  * Attribute observer configuration with *camelized* attribute names.
  */
 export interface AttributeDescriptors {
-    [key: string]: typeof String | typeof Number | typeof Boolean | any;
+    [key: string]: typeof String | typeof Number | typeof Boolean | typeof Object;
 }
 
 export type AttributeValues<A> = {
-    [key in keyof A]: string | number | boolean | any;
+    [key in keyof A]: string | number | boolean | object;
 };
 
 /**
