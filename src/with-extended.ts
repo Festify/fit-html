@@ -17,6 +17,12 @@ export default function withExtended<S, P, OP>(Base: FitElement<S, P, OP>): FitE
     return class extends Base {
         render() {
             const props = this.getProps();
+
+            if (this._shallowEqual(props, this._previousProps)) {
+                return;
+            }
+
+            this._previousProps = props;
             render(this.templateFunction(props), this.shadowRoot!);
         }
     };

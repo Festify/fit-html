@@ -20,6 +20,11 @@ export interface MapDispatchToPropsFn<S, P, OP> {
  * @template {OP} The type of the own properties passed to the element from the outside.
  */
 export interface FitElement<S, P, OP> extends HTMLElement {
+    /**
+     * @hidden
+     */
+    _previousProps: P | null
+
     new(...args: any[]): FitElement<S, P, OP>;
 
     /**
@@ -61,6 +66,11 @@ export interface FitElement<S, P, OP> extends HTMLElement {
      * {@ref getProps}.
      */
     render();
+
+    /**
+     * @hidden
+     */
+    _shallowEqual(a, b): boolean;
 }
 
 export { html };
@@ -81,6 +91,7 @@ export default function connect<S, SP, DP, OP = {}>(
 ): FitElement<S, SP & DP, OP> {
     return class extends HTMLElement {
         _preparedDispatch: MapDispatchToPropsFn<S, DP, OP> | ActionCreatorsMapObject;
+        _previousProps: SP & DP | null = null;
         _renderEnqueued: boolean = false;
         _store: Store<S>;
         _unsubscribe: Unsubscribe;
@@ -157,7 +168,38 @@ export default function connect<S, SP, DP, OP = {}>(
         }
 
         render() {
-            render(templateFn(this.getProps()), this.shadowRoot!);
+            const props = this.getProps();
+
+            if (this._shallowEqual(props, this._previousProps)) {
+                return;
+            }
+
+            this._previousProps = props;
+            render(templateFn(props), this.shadowRoot!);
+        }
+
+        _shallowEqual(a, b) {
+            if (a === b) {
+                return true;
+            }
+            if (a == null || b == null) {
+                return false;
+            }
+
+            const aKeys = Object.keys(a);
+            const bKeys = Object.keys(b);
+
+            if (aKeys.length !== bKeys.length) {
+                return false;
+            }
+
+            for (const key of aKeys) {
+                if (a[key] !== b[key]) {
+                    return false;
+                }
+            }
+
+            return true;
         }
     } as any;
 }
