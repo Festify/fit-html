@@ -25,6 +25,8 @@ export type AttributeValues<A> = {
     [key in keyof A]: any;
 };
 
+export type PropsElement<S, P, A> = FitElement<S, P, AttributeValues<A>> & AttributeValues<A>;
+
 /**
  * Wraps the given 💪-element to react to attribute and property changes.
  *
@@ -40,7 +42,7 @@ export type AttributeValues<A> = {
 export default function withProps<S, P, A extends AttributeDescriptors>(
     Base: FitElement<S, P, AttributeValues<A>>,
     attributeDescriptors: A,
-): FitElement<S, P, AttributeValues<A>> {
+): PropsElement<S, P, A> {
     if (process && process.env.NODE_ENV !== 'production') {
         const hasCasedAttrs = Object.keys(attributeDescriptors)
             .some(k => attributeDescriptors[k] !== null && /[A-Z]/.test(k));
@@ -101,5 +103,5 @@ export default function withProps<S, P, A extends AttributeDescriptors>(
         getProps(): P {
             return super.getProps(this._ownProps);
         }
-    };
+    } as any;
 }
