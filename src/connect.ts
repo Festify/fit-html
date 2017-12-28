@@ -12,6 +12,10 @@ export interface MapDispatchToPropsFn<S, P, OP> {
     (dispatch: Dispatch<S>, ownProps: OP): P;
 }
 
+export interface MapStateToPropsFactory<S, P, OP> {
+    (): MapStateToPropsFn<S, P, OP>
+}
+
 /**
  * A 💪 web component.
  *
@@ -85,12 +89,13 @@ export { html };
  * @template S, SP, DP, OP
  */
 export default function connect<S, SP, DP, OP = {}>(
-    mapStateToProps: MapStateToPropsFn<S, SP, OP>,
+    mapStateToProps: MapStateToPropsFactory<S, SP, OP> | MapStateToPropsFn<S, SP, OP>,
     mapDispatchToProps: MapDispatchToPropsFn<S, DP, OP> | DP,
     templateFn: (props: SP & DP) => TemplateResult
 ): FitElement<S, SP & DP, OP> {
     return class extends HTMLElement {
         _preparedDispatch: MapDispatchToPropsFn<S, DP, OP> | ActionCreatorsMapObject;
+        _preparedMapStateToProps: MapStateToPropsFn<S, SP, OP>;
         _previousProps: SP & DP | null = null;
         _renderEnqueued: boolean = false;
         _store: Store<S>;
@@ -102,6 +107,10 @@ export default function connect<S, SP, DP, OP = {}>(
 
         connectedCallback() {
             this.attachShadow({ mode: 'open' });
+
+            this._preparedMapStateToProps = isFactory(mapStateToProps)
+                ? mapStateToProps()
+                : mapStateToProps;
 
             const store = this.getStore();
             this._preparedDispatch = isFunction(mapDispatchToProps)
@@ -160,7 +169,7 @@ export default function connect<S, SP, DP, OP = {}>(
             const store = this.getStore();
             return Object.assign(
                 {},
-                mapStateToProps(store.getState(), ownProps),
+                this._preparedMapStateToProps(store.getState(), ownProps),
                 isFunction(this._preparedDispatch)
                     ? this._preparedDispatch(store.dispatch, ownProps)
                     : this._preparedDispatch
@@ -202,4 +211,10 @@ export default function connect<S, SP, DP, OP = {}>(
             return true;
         }
     } as any;
+}
+
+function isFactory<S, P, OP>(
+    fn: MapStateToPropsFactory<S, P, OP> | MapStateToPropsFn<S, P, OP>
+): fn is MapStateToPropsFactory<S, P, OP> {
+    return fn.length === 0;
 }
