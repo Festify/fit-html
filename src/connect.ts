@@ -105,13 +105,17 @@ export default function connect<S, SP, DP, OP = {}>(
             return templateFn;
         }
 
-        connectedCallback() {
+        constructor() {
+            super();
+
             this.attachShadow({ mode: 'open' });
 
             this._preparedMapStateToProps = isFactory(mapStateToProps)
                 ? mapStateToProps()
                 : mapStateToProps;
+        }
 
+        connectedCallback() {
             const store = this.getStore();
             this._preparedDispatch = isFunction(mapDispatchToProps)
                 ? mapDispatchToProps
