@@ -37,7 +37,7 @@ export type AttributeValues<A> = {
  * @returns {FitElement<S, P, A>} A subclass of the given {@link Base} that listens for changes on the given properties and attributes.
  * @template S, P, A, OP
  */
-export default function withProps<S, P, OP, A extends AttributeDescriptors>(
+export default function withProps<S, P, A extends AttributeDescriptors>(
     Base: FitElement<S, P, AttributeValues<A>>,
     attributeDescriptors: A,
 ): FitElement<S, P, AttributeValues<A>> {
