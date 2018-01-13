@@ -21,6 +21,8 @@ export declare class ProviderElement<S> extends HTMLElement {
  */
 export default function createProvider<S>(store: Store<S>): ProviderElement<S> {
     return class extends HTMLElement {
-        reduxStore: Store<S> = store;
+        get reduxStore(): Store<S> {
+            return store;
+        }
     } as any;
 }
