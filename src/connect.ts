@@ -99,12 +99,12 @@ export default function connect<S, SP, DP, OP = {}>(
     templateFn: (props: SP & DP) => TemplateResult
 ): FitElement<S, SP & DP, OP> {
     return class extends HTMLElement {
-        _preparedDispatch: MapDispatchToPropsFn<S, DP, OP> | ActionCreatorsMapObject;
-        _preparedMapStateToProps: MapStateToPropsFn<S, SP, OP>;
-        _previousProps: SP & DP | null = null;
-        _renderEnqueued: boolean = false;
-        _store: Store<S>;
-        _unsubscribe: Unsubscribe;
+        private _preparedDispatch: MapDispatchToPropsFn<S, DP, OP> | ActionCreatorsMapObject;
+        private _preparedMapStateToProps: MapStateToPropsFn<S, SP, OP>;
+        private _previousProps: SP & DP | null = null;
+        private _renderEnqueued: boolean = false;
+        private _store: Store<S>;
+        private _unsubscribe: Unsubscribe;
 
         get renderFunction(): (
             result: TemplateResult,
@@ -160,14 +160,6 @@ export default function connect<S, SP, DP, OP = {}>(
                 return this._store;
             }
 
-            function isProvider<S>(elem: any): elem is ProviderElement<S> {
-                return elem && !!(elem as ProviderElement<S>).reduxStore;
-            }
-
-            function isReduxStore<S>(obj: any): obj is Store<S> {
-                return obj && obj.getState && obj.dispatch && obj.subscribe && obj.replaceReducer;
-            }
-
             let node: any = this;
             while (node = node.parentNode || node.host) {
                 if (isProvider<S>(node)) {
@@ -196,42 +188,50 @@ export default function connect<S, SP, DP, OP = {}>(
         render() {
             const props = this.getProps();
 
-            if (this._shallowEqual(props, this._previousProps)) {
+            if (shallowEqual(props, this._previousProps)) {
                 return;
             }
 
             this._previousProps = props;
             this.renderFunction(templateFn(props), this.shadowRoot!);
         }
-
-        _shallowEqual(a, b) {
-            if (a === b) {
-                return true;
-            }
-            if (a == null || b == null) {
-                return false;
-            }
-
-            const aKeys = Object.keys(a);
-            const bKeys = Object.keys(b);
-
-            if (aKeys.length !== bKeys.length) {
-                return false;
-            }
-
-            for (const key of aKeys) {
-                if (a[key] !== b[key]) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
     } as any;
 }
 
 function isFactory<S, P, OP>(
-    fn: MapStateToPropsFactory<S, P, OP> | MapStateToPropsFn<S, P, OP>
+    fn: MapStateToPropsFactory<S, P, OP> | MapStateToPropsFn<S, P, OP>,
 ): fn is MapStateToPropsFactory<S, P, OP> {
     return fn.length === 0;
+}
+
+function isProvider<S>(elem: any): elem is ProviderElement<S> {
+    return elem && !!(elem as ProviderElement<S>).reduxStore;
+}
+
+function isReduxStore<S>(obj: any): obj is Store<S> {
+    return obj && obj.getState && obj.dispatch && obj.subscribe && obj.replaceReducer;
+}
+
+function shallowEqual(a, b) {
+    if (a === b) {
+        return true;
+    }
+    if (a == null || b == null) {
+        return false;
+    }
+
+    const aKeys = Object.keys(a);
+    const bKeys = Object.keys(b);
+
+    if (aKeys.length !== bKeys.length) {
+        return false;
+    }
+
+    for (const key of aKeys) {
+        if (a[key] !== b[key]) {
+            return false;
+        }
+    }
+
+    return true;
 }
