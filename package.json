@@ -19,7 +19,7 @@
     "redux": "^3.7.2"
   },
   "scripts": {
-    "build": "npm run lint && tsc",
+    "build": "yarn lint && tsc",
     "fix": "tslint -p tsconfig.json --fix",
     "lint": "tslint -p tsconfig.json"
   }
