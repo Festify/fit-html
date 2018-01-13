@@ -156,11 +156,10 @@ export default function connect<S, SP, DP, OP = {}>(
             }
 
             this._renderEnqueued = true;
-            Promise.resolve()
-                .then(() => {
-                    this._renderEnqueued = false;
-                    this.render();
-                });
+            Promise.resolve().then(() => {
+                this._renderEnqueued = false;
+                this.render();
+            });
         }
 
         getStore(): Store<S> {
