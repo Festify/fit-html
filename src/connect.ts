@@ -2,6 +2,7 @@ import { html, render, PartCallback, TemplateResult } from 'lit-html';
 import isFunction from 'lodash-es/isFunction';
 import { bindActionCreators, ActionCreatorsMapObject, Dispatch, Store, Unsubscribe } from 'redux';
 
+import { ClassConstructor } from '.';
 import { ProviderElement } from './provider';
 
 /**
@@ -85,7 +86,7 @@ export declare class FitElement<S, P, OP> extends HTMLElement {
      * @param {OP} ownProps Props passed to the component via attributes.
      * @returns {P} Generated view properties.
      */
-    protected getProps(ownProps?: OP): P;
+    getProps(ownProps?: OP): P;
 }
 
 export { html };
@@ -105,7 +106,7 @@ export default function connect<S, SP, DP, OP = {}>(
     mapStateToProps: MapStateToPropsFactory<S, SP, OP> | MapStateToPropsFn<S, SP, OP>,
     mapDispatchToProps: MapDispatchToPropsFn<S, DP, OP> | DP,
     templateFn: (props: SP & DP) => TemplateResult,
-): FitElement<S, SP & DP, OP> {
+): ClassConstructor<FitElement<S, SP & DP, OP>> {
     return class extends HTMLElement {
         private _preparedDispatch: MapDispatchToPropsFn<S, DP, OP> | ActionCreatorsMapObject;
         private _preparedMapStateToProps: MapStateToPropsFn<S, SP, OP>;
@@ -202,7 +203,7 @@ export default function connect<S, SP, DP, OP = {}>(
             this._previousProps = props;
             this.renderFunction(templateFn(props), this.shadowRoot!);
         }
-    } as any;
+    };
 }
 
 function isFactory<S, P, OP>(

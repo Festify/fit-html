@@ -1,5 +1,7 @@
 import { Store } from 'redux';
 
+import { ClassConstructor } from './index';
+
 /**
  * A 💪 redux store provider element.
  */
@@ -19,7 +21,7 @@ export declare class ProviderElement<S> extends HTMLElement {
  * @returns {ProviderElement<S>} The redux store provider element.
  * @template S
  */
-export default function createProvider<S>(store: Store<S>): ProviderElement<S> {
+export default function createProvider<S>(store: Store<S>): ClassConstructor<ProviderElement<S>> {
     return class extends HTMLElement {
         get reduxStore(): Store<S> {
             return store;

@@ -14,12 +14,9 @@ export { html };
  * @returns {FitElement<S, P, OP>} A subclass of the given {@ref Base} that uses lit-extendeds rendering.
  * @template S, P, OP
  */
-export default function withExtended<
-    B extends ClassConstructor<FitElement<S, P, OP>>,
-    S,
-    P,
-    OP
->(Base: B): B {
+export default function withExtended<S, P, OP>(
+    Base: ClassConstructor<FitElement<S, P, OP>>,
+): ClassConstructor<FitElement<S, P, OP>> {
     return class extends Base {
         get renderFunction() {
             return render;

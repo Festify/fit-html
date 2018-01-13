@@ -40,12 +40,9 @@ export type AttributeValues<A> = {
  * @returns {FitElement<S, P, A>} A subclass of the given {@link Base} that listens for changes on the given properties and attributes.
  * @template S, P, A, OP
  */
-export default function withProps<
-    B extends ClassConstructor<FitElement<S, P, AttributeValues<A>>>,
-    S,
-    P,
-    A extends AttributeDescriptors
->(Base: B, attributeDescriptors: A): B {
+export default function withProps<S, P, A extends AttributeDescriptors>(
+    Base: ClassConstructor<FitElement<S, P, AttributeValues<A>>>, attributeDescriptors: A,
+): ClassConstructor<FitElement<S, P, AttributeValues<A>>> {
     if (process && process.env.NODE_ENV !== 'production') {
         const hasCasedAttrs = Object.keys(attributeDescriptors)
             .some(k => attributeDescriptors[k] !== null && /[A-Z]/.test(k));
