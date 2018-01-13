@@ -3,7 +3,10 @@ import { Store } from 'redux';
 /**
  * A 💪 redux store provider element.
  */
-export interface ProviderElement<S> extends HTMLElement, Function {
+export declare class ProviderElement<S> extends HTMLElement {
+    /**
+     * The previously created redux store to be accessible for all children.
+     */
     reduxStore: Store<S>;
 }
 

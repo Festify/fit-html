@@ -4,10 +4,22 @@ import { bindActionCreators, ActionCreatorsMapObject, Dispatch, Store, Unsubscri
 
 import { ProviderElement } from './provider';
 
+/**
+ * The function that extracts required data out of the state and the passed props.
+ */
 export type MapStateToPropsFn<S, P, OP> = (state: S, ownProps: OP) => P;
 
+/**
+ * The function that sets up the view actions based on the store's dispatch function.
+ */
 export type MapDispatchToPropsFn<S, P, OP> = (dispatch: Dispatch<S>, ownProps: OP) => P;
 
+/**
+ * A factory method for creating a specialized {@ref MapStateToPropsFn<S, P, OP>}
+ * for every instance of the component.
+ *
+ * Will be invoked at component construction time.
+ */
 export type MapStateToPropsFactory<S, P, OP> = () => MapStateToPropsFn<S, P, OP>;
 
 /**

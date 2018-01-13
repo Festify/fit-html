@@ -8,7 +8,7 @@ export { html };
 /**
  * Wraps the given 💪-element to use lit-extended's render function.
  *
- * Use this if you want to attach event-handlers to your children, for example.
+ * Use this if you want to attach event handlers to your children, for example.
  *
  * @param {FitElement<S, P, OP>} Base The base 💪-element.
  * @returns {FitElement<S, P, OP>} A subclass of the given {@ref Base} that uses lit-extendeds rendering.
