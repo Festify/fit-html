@@ -26,6 +26,8 @@ export type AttributeValues<A> = {
     [key in keyof A]: any;
 };
 
+/* tslint:disable:max-line-length */
+
 /**
  * Wraps the given 💪-element to react to attribute and property changes.
  *
@@ -78,7 +80,7 @@ export default function withProps<
 
                         this._ownProps[propName] = val;
                         this.enqueueRender();
-                    }
+                    },
                 };
             }
 

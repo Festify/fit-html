@@ -1,20 +1,14 @@
- import { html, render, PartCallback, TemplateResult } from 'lit-html';
+import { html, render, PartCallback, TemplateResult } from 'lit-html';
 import isFunction from 'lodash-es/isFunction';
 import { bindActionCreators, ActionCreatorsMapObject, Dispatch, Store, Unsubscribe } from 'redux';
 
 import { ProviderElement } from './provider';
 
-export interface MapStateToPropsFn<S, P, OP> {
-    (state: S, ownProps: OP): P;
-}
+export type MapStateToPropsFn<S, P, OP> = (state: S, ownProps: OP) => P;
 
-export interface MapDispatchToPropsFn<S, P, OP> {
-    (dispatch: Dispatch<S>, ownProps: OP): P;
-}
+export type MapDispatchToPropsFn<S, P, OP> = (dispatch: Dispatch<S>, ownProps: OP) => P;
 
-export interface MapStateToPropsFactory<S, P, OP> {
-    (): MapStateToPropsFn<S, P, OP>
-}
+export type MapStateToPropsFactory<S, P, OP> = () => MapStateToPropsFn<S, P, OP>;
 
 /**
  * A 💪 web component.
@@ -24,8 +18,6 @@ export interface MapStateToPropsFactory<S, P, OP> {
  * @template {OP} The type of the own properties passed to the element from the outside.
  */
 export declare class FitElement<S, P, OP> extends HTMLElement {
-    constructor(...args: any[]);
-
     /**
      * The 🔥-html function used to render to the dom.
      *
@@ -33,14 +25,16 @@ export declare class FitElement<S, P, OP> extends HTMLElement {
      */
     renderFunction: (
         result: TemplateResult,
-        container: Element|DocumentFragment,
-        partCallback?: PartCallback
+        container: Element | DocumentFragment,
+        partCallback?: PartCallback,
     ) => void;
 
     /**
      * The 🔥-html templating function.
      */
     templateFunction: (props: P) => TemplateResult;
+
+    constructor(...args: any[]);
 
     connectedCallback();
     disconnectedCallback();
@@ -84,6 +78,8 @@ export declare class FitElement<S, P, OP> extends HTMLElement {
 
 export { html };
 
+/* tslint:disable:max-line-length */
+
 /**
  * Creates a 💪 web component connected to the redux store.
  *
@@ -96,7 +92,7 @@ export { html };
 export default function connect<S, SP, DP, OP = {}>(
     mapStateToProps: MapStateToPropsFactory<S, SP, OP> | MapStateToPropsFn<S, SP, OP>,
     mapDispatchToProps: MapDispatchToPropsFn<S, DP, OP> | DP,
-    templateFn: (props: SP & DP) => TemplateResult
+    templateFn: (props: SP & DP) => TemplateResult,
 ): FitElement<S, SP & DP, OP> {
     return class extends HTMLElement {
         private _preparedDispatch: MapDispatchToPropsFn<S, DP, OP> | ActionCreatorsMapObject;
@@ -109,7 +105,7 @@ export default function connect<S, SP, DP, OP = {}>(
         get renderFunction(): (
             result: TemplateResult,
             container: Element | DocumentFragment,
-            partCallback?: PartCallback
+            partCallback?: PartCallback,
         ) => void {
             return render;
         }
@@ -181,7 +177,7 @@ export default function connect<S, SP, DP, OP = {}>(
                 this._preparedMapStateToProps(store.getState(), ownProps),
                 isFunction(this._preparedDispatch)
                     ? this._preparedDispatch(store.dispatch, ownProps)
-                    : this._preparedDispatch
+                    : this._preparedDispatch,
             ) as SP & DP;
         }
 
