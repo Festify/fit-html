@@ -5,3 +5,5 @@ export { default as withProps } from './with-props';
 
 export * from './connect';
 export * from './provider';
+
+export type ClassConstructor<T> = new(...args: any[]) => T;

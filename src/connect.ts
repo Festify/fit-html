@@ -1,4 +1,4 @@
-import { html, render, TemplateResult } from 'lit-html';
+ import { html, render, PartCallback, TemplateResult } from 'lit-html';
 import isFunction from 'lodash-es/isFunction';
 import { bindActionCreators, ActionCreatorsMapObject, Dispatch, Store, Unsubscribe } from 'redux';
 
@@ -23,19 +23,22 @@ export interface MapStateToPropsFactory<S, P, OP> {
  * @template {P} The type of the view properties.
  * @template {OP} The type of the own properties passed to the element from the outside.
  */
-export interface FitElement<S, P, OP> extends HTMLElement {
-    /**
-     * @hidden
-     */
-    _previousProps: P | null
+export declare class FitElement<S, P, OP> extends HTMLElement {
+    constructor(...args: any[]);
 
-    new(...args: any[]): FitElement<S, P, OP>;
+    /**
+     * The 🔥-html function used to render to the dom.
+     *
+     * Can be either the one from lit-html or lit-html/extended.
+     */
+    renderFunction: (
+        result: TemplateResult,
+        container: Element|DocumentFragment,
+        partCallback?: PartCallback
+    ) => void;
 
     /**
      * The 🔥-html templating function.
-     *
-     * @param {P} props View properties.
-     * @returns {TemplateResult} The 🔥-html template result.
      */
     templateFunction: (props: P) => TemplateResult;
 
@@ -52,9 +55,22 @@ export interface FitElement<S, P, OP> extends HTMLElement {
     /**
      * Obtains the redux store.
      *
+     * The dom is traversed upwards until either another 💪-html element or
+     * the redux store provider element is found. As such, it may not be invoked
+     * until the component has been attached to the document (respectively only
+     * during / after connectedCallback has fired).
+     *
      * @returns {Store<S>} The redux store.
      */
     getStore(): Store<S>;
+
+    /**
+     * Renders the elements content into its shadow root using props from
+     * {@ref getProps}.
+     *
+     * You probably want to use {@ref enqueueRender} instead.
+     */
+    render();
 
     /**
      * Callback that computes the view properties from the redux store
@@ -63,18 +79,7 @@ export interface FitElement<S, P, OP> extends HTMLElement {
      * @param {OP} ownProps Props passed to the component via attributes.
      * @returns {P} Generated view properties.
      */
-    getProps(ownProps?: OP): P;
-
-    /**
-     * Renders the elements content into its shadow root using props from
-     * {@ref getProps}.
-     */
-    render();
-
-    /**
-     * @hidden
-     */
-    _shallowEqual(a, b): boolean;
+    protected getProps(ownProps?: OP): P;
 }
 
 export { html };
@@ -100,6 +105,14 @@ export default function connect<S, SP, DP, OP = {}>(
         _renderEnqueued: boolean = false;
         _store: Store<S>;
         _unsubscribe: Unsubscribe;
+
+        get renderFunction(): (
+            result: TemplateResult,
+            container: Element | DocumentFragment,
+            partCallback?: PartCallback
+        ) => void {
+            return render;
+        }
 
         get templateFunction(): (props: SP & DP) => TemplateResult {
             return templateFn;
@@ -188,7 +201,7 @@ export default function connect<S, SP, DP, OP = {}>(
             }
 
             this._previousProps = props;
-            render(templateFn(props), this.shadowRoot!);
+            this.renderFunction(templateFn(props), this.shadowRoot!);
         }
 
         _shallowEqual(a, b) {

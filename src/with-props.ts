@@ -1,3 +1,4 @@
+import { ClassConstructor } from '.';
 import { FitElement } from './connect';
 
 declare const process: any;
@@ -37,10 +38,12 @@ export type AttributeValues<A> = {
  * @returns {FitElement<S, P, A>} A subclass of the given {@link Base} that listens for changes on the given properties and attributes.
  * @template S, P, A, OP
  */
-export default function withProps<S, P, A extends AttributeDescriptors>(
-    Base: FitElement<S, P, AttributeValues<A>>,
-    attributeDescriptors: A,
-): FitElement<S, P, AttributeValues<A>> {
+export default function withProps<
+    B extends ClassConstructor<FitElement<S, P, AttributeValues<A>>>,
+    S,
+    P,
+    A extends AttributeDescriptors
+>(Base: B, attributeDescriptors: A): B {
     if (process && process.env.NODE_ENV !== 'production') {
         const hasCasedAttrs = Object.keys(attributeDescriptors)
             .some(k => attributeDescriptors[k] !== null && /[A-Z]/.test(k));
@@ -59,8 +62,8 @@ export default function withProps<S, P, A extends AttributeDescriptors>(
             return observedAttrs;
         }
 
-        constructor() {
-            super();
+        constructor(...args: any[]) {
+            super(args);
 
             const obj = {};
             for (const propName of observedAttrs) {

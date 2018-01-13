@@ -1,5 +1,6 @@
 import { html, render } from 'lit-html/lib/lit-extended';
 
+import { ClassConstructor } from '.';
 import { FitElement } from './connect';
 
 export { html };
@@ -13,17 +14,15 @@ export { html };
  * @returns {FitElement<S, P, OP>} A subclass of the given {@ref Base} that uses lit-extendeds rendering.
  * @template S, P, OP
  */
-export default function withExtended<S, P, OP>(Base: FitElement<S, P, OP>): FitElement<S, P, OP> {
+export default function withExtended<
+    B extends ClassConstructor<FitElement<S, P, OP>>,
+    S,
+    P,
+    OP
+>(Base: B): B {
     return class extends Base {
-        render() {
-            const props = this.getProps();
-
-            if (this._shallowEqual(props, this._previousProps)) {
-                return;
-            }
-
-            this._previousProps = props;
-            render(this.templateFunction(props), this.shadowRoot!);
+        get renderFunction() {
+            return render;
         }
     };
 }
