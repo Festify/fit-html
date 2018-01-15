@@ -26,5 +26,5 @@ export default function createProvider<S>(store: Store<S>): ClassConstructor<Pro
         get reduxStore(): Store<S> {
             return store;
         }
-    } as any;
+    };
 }
