@@ -1,6 +1,6 @@
 import { Store } from 'redux';
 
-import { ClassConstructor } from './index';
+import { ClassConstructor } from '.';
 
 /**
  * A 💪 redux store provider element.
