@@ -1,7 +1,7 @@
 import { html, render } from 'lit-html/lib/lit-extended';
 
 import { ClassConstructor } from '.';
-import { FitElement } from './connect';
+import { FitElement, RenderFunction } from './connect';
 
 export { html };
 
@@ -18,7 +18,7 @@ export default function withExtended<S, P, OP>(
     Base: ClassConstructor<FitElement<S, P, OP>>,
 ): ClassConstructor<FitElement<S, P, OP>> {
     return class extends Base {
-        get renderFunction() {
+        get renderFunction(): RenderFunction {
             return render;
         }
     };

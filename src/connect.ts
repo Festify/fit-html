@@ -24,6 +24,11 @@ export type MapDispatchToPropsFn<S, P, OP> = (dispatch: Dispatch<S>, ownProps: O
 export type MapStateToPropsFactory<S, P, OP> = () => MapStateToPropsFn<S, P, OP>;
 
 /**
+ * A lit-html rendering function.
+ */
+export type RenderFunction = typeof render;
+
+/**
  * A 💪 web component.
  *
  * @template {S} The type of the redux state.
@@ -36,11 +41,7 @@ export declare class FitElement<S, P, OP> extends HTMLElement {
      *
      * Can be either the one from lit-html or lit-html/extended.
      */
-    renderFunction: (
-        result: TemplateResult,
-        container: Element | DocumentFragment,
-        partCallback?: PartCallback,
-    ) => void;
+    renderFunction: RenderFunction;
 
     /**
      * The 🔥-html templating function.
@@ -115,11 +116,7 @@ export default function connect<S, SP, DP, OP = {}>(
         private _store: Store<S>;
         private _unsubscribe: Unsubscribe;
 
-        get renderFunction(): (
-            result: TemplateResult,
-            container: Element | DocumentFragment,
-            partCallback?: PartCallback,
-        ) => void {
+        get renderFunction(): RenderFunction {
             return render;
         }
 
