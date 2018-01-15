@@ -1,9 +1,7 @@
-import { html, render } from 'lit-html/lib/lit-extended';
+import { render } from 'lit-html/lib/lit-extended';
 
 import { ClassConstructor } from '.';
 import { FitElement, RenderFunction } from './connect';
-
-export { html };
 
 /**
  * Wraps the given 💪-element to use lit-extended's render function.
