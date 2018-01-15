@@ -109,6 +109,7 @@ export default function connect<S, SP, DP, OP = {}>(
     templateFn: (props: SP & DP) => TemplateResult,
 ): ClassConstructor<FitElement<S, SP & DP, OP>> {
     return class extends HTMLElement {
+        private _isConnected: boolean = false;
         private _preparedDispatch: MapDispatchToPropsFn<S, DP, OP> | ActionCreatorsMapObject;
         private _preparedMapStateToProps: MapStateToPropsFn<S, SP, OP>;
         private _previousProps: SP & DP | null = null;
@@ -135,6 +136,8 @@ export default function connect<S, SP, DP, OP = {}>(
         }
 
         connectedCallback() {
+            this._isConnected = true;
+
             const store = this.getStore();
             this._preparedDispatch = isFunction(mapDispatchToProps)
                 ? mapDispatchToProps
@@ -145,6 +148,8 @@ export default function connect<S, SP, DP, OP = {}>(
         }
 
         disconnectedCallback() {
+            this._isConnected = false;
+
             this._unsubscribe();
             this._store = undefined!;
         }
@@ -192,6 +197,10 @@ export default function connect<S, SP, DP, OP = {}>(
         }
 
         render() {
+            if (!this._isConnected) {
+                return;
+            }
+
             const props = this.getProps();
 
             if (shallowEqual(props, this._previousProps)) {
