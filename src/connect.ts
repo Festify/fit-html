@@ -100,7 +100,7 @@ export { html };
  * @param {MapStateToPropsFn<S, SP, OP>} mapStateToProps The MapStateToProps function. If you want to use ownProps, pass the return value through the {@link withProps} mixin.
  * @param {MapDispatchToPropsFn<S, DP, OP>} mapDispatchToProps The MapStateToDispatch function. If you want to use ownProps, pass the return value through the {@link withProps} mixin.
  * @param {(props: (SP & DP)) => TemplateResult} templateFn The 🔥-html templating function.
- * @returns {FitElement<S, SP & DP, OP>} A newly created 💪-element.
+ * @returns {FitElement<S, SP & DP, OP>} A newly created 💪-element class.
  * @template S, SP, DP, OP
  */
 export default function connect<S, SP, DP, OP = {}>(

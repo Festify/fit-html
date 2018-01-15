@@ -18,7 +18,7 @@ export declare class ProviderElement<S> extends HTMLElement {
  * All 💪-elements must be a child of this element.
  *
  * @param {Store<S>} store The redux store.
- * @returns {ProviderElement<S>} The redux store provider element.
+ * @returns {ProviderElement<S>} The redux store provider element class.
  * @template S
  */
 export default function createProvider<S>(store: Store<S>): ClassConstructor<ProviderElement<S>> {
