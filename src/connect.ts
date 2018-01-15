@@ -215,7 +215,7 @@ function isProvider<S>(elem: any): elem is ProviderElement<S> {
 }
 
 function isReduxStore<S>(obj: any): obj is Store<S> {
-    return obj && obj.getState && obj.dispatch && obj.subscribe && obj.replaceReducer;
+    return obj && obj.getState && obj.dispatch && obj.subscribe;
 }
 
 function shallowEqual(a, b) {
