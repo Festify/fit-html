@@ -41,7 +41,8 @@ export type AttributeValues<A> = {
  * @template S, P, A, OP
  */
 export default function withProps<S, P, A extends AttributeDescriptors>(
-    Base: ClassConstructor<FitElement<S, P, AttributeValues<A>>>, attributeDescriptors: A,
+    Base: ClassConstructor<FitElement<S, P, AttributeValues<A>>>,
+    attributeDescriptors: A,
 ): ClassConstructor<FitElement<S, P, AttributeValues<A>>> {
     if (process && process.env.NODE_ENV !== 'production') {
         const hasCasedAttrs = Object.keys(attributeDescriptors)
