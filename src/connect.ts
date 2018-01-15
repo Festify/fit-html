@@ -162,7 +162,9 @@ export default function connect<S, SP, DP, OP = {}>(
             this._renderEnqueued = true;
             Promise.resolve().then(() => {
                 this._renderEnqueued = false;
-                this.render();
+                if (this._isConnected) {
+                    this.render();
+                }
             });
         }
 
