@@ -146,6 +146,7 @@ export default function connect<S, SP, DP, OP = {}>(
 
         disconnectedCallback() {
             this._unsubscribe();
+            this._store = undefined!;
         }
 
         enqueueRender() {
