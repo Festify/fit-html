@@ -1,4 +1,5 @@
 import cjs from 'rollup-plugin-commonjs';
+import copy from 'rollup-plugin-copy';
 import nodeGlobals from 'rollup-plugin-node-globals';
 import nodeBuiltins from 'rollup-plugin-node-builtins';
 import nodeResolve from 'rollup-plugin-node-resolve';
@@ -24,6 +25,7 @@ export default {
         typescript(),
         cjs(),
         nodeGlobals(),
+        copy({ [src('index.html')]: dist('index.html') }),
     ],
     onwarn: err => console.error(err.toString()),
 };
