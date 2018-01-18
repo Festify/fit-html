@@ -181,7 +181,7 @@ export default function connect<S, SP, DP, OP = {}>(
                 }
             }
 
-            throw new Error("Missing redux store.\nSeems like you're using fit-html without a redux store. Please use the provider component to provide one to the element tree.");
+            throw new Error("💪-html: Missing redux store.\nSeems like you're using fit-html without a redux store. Please use the provider component to provide one to the element tree.");
         }
 
         getProps(ownProps = {} as OP): SP & DP {
