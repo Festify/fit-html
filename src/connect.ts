@@ -175,11 +175,8 @@ export default function connect<S, SP, DP, OP = {}>(
 
             let node: any = this;
             while (node = node.parentNode || node.host) {
-                if (isProvider<S>(node)) {
-                    this._store = node.reduxStore;
-                    return this._store;
-                } else if (isReduxStore<S>(node._store)) {
-                    this._store = node._store;
+                if (isReduxStore<S>(node._store || node.reduxStore)) {
+                    this._store = node._store || node.reduxStore;
                     return this._store;
                 }
             }
@@ -219,10 +216,6 @@ function isFactory<S, P, OP>(
     fn: MapStateToPropsFactory<S, P, OP> | MapStateToPropsFn<S, P, OP>,
 ): fn is MapStateToPropsFactory<S, P, OP> {
     return fn.length === 0;
-}
-
-function isProvider<S>(elem: any): elem is ProviderElement<S> {
-    return elem && !!(elem as ProviderElement<S>).reduxStore;
 }
 
 function isReduxStore<S>(obj: any): obj is Store<S> {
