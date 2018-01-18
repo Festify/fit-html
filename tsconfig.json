@@ -12,8 +12,7 @@
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true
   },
-  "exclude": [
-    "node_modules",
-    "dist"
+  "files": [
+    "src/index.ts"
   ]
 }
