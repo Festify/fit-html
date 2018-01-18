@@ -2,16 +2,27 @@
   "name": "fit-html",
   "version": "0.4.3",
   "description": "5KB functional Web Components without bloat",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "repository": "https://github.com/Festify/fit-html",
   "author": "Festify Dev Team <mail+git@festify.rocks>",
   "license": "MIT",
   "private": false,
   "devDependencies": {
+    "@types/chai": "^4.1.1",
     "@types/lodash-es": "^4.17.0",
+    "@types/mocha": "^2.2.46",
+    "@webcomponents/webcomponentsjs": "^1.0.22",
+    "rollup": "^0.54.1",
+    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-globals": "^1.1.0",
+    "rollup-plugin-node-resolve": "^3.0.2",
+    "rollup-plugin-typescript2": "^0.10.0",
     "tslint": "^5.9.1",
-    "typescript": "^2.5.3"
+    "typescript": "^2.5.3",
+    "wct-browser-legacy": "^0.0.1-pre.11",
+    "web-component-tester": "^6.5.0"
   },
   "dependencies": {
     "lit-html": "^0.8.0",
@@ -21,6 +32,7 @@
   "scripts": {
     "build": "yarn lint && tsc",
     "fix": "tslint -p tsconfig.json --fix",
-    "lint": "tslint -p tsconfig.json"
+    "lint": "tslint -p tsconfig.json",
+    "test": "rollup -c && npx wct dist/test -l chrome --npm"
   }
 }
