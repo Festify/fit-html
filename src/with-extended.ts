@@ -11,6 +11,7 @@ import { FitElement, RenderFunction } from './connect';
  * @param {FitElement<S, P, OP>} Base The base 💪-element.
  * @returns {FitElement<S, P, OP>} A subclass of the given {@ref Base} that uses lit-extendeds rendering.
  * @template S, P, OP
+ * @see https://github.com/Polymer/lit-html/blob/master/src/lib/lit-extended.ts
  */
 export default function withExtended<S, P, OP>(
     Base: ClassConstructor<FitElement<S, P, OP>>,
