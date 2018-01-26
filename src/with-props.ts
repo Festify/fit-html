@@ -85,8 +85,8 @@ export default function withProps<S, P, A extends AttributeDescriptors>(
             Object.defineProperties(this, obj);
         }
 
-        attributeChangedCallback(name: string, _: string, newValue: string) {
-            if (!(name in attributeDescriptors)) {
+        attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+            if (!(name in attributeDescriptors) || oldValue === newValue) {
                 return;
             }
 
