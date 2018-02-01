@@ -1,4 +1,4 @@
-import { html, render, PartCallback, TemplateResult } from 'lit-html';
+import { render, PartCallback, TemplateResult } from 'lit-html';
 import isFunction from 'lodash-es/isFunction';
 import { bindActionCreators, ActionCreatorsMapObject, Dispatch, Store, Unsubscribe } from 'redux';
 
@@ -89,8 +89,6 @@ export declare class FitElement<S, P, OP> extends HTMLElement {
      */
     getProps(ownProps?: OP): P;
 }
-
-export { html };
 
 /* tslint:disable:max-line-length */
 
