@@ -1,4 +1,5 @@
 import { render, PartCallback, TemplateResult } from 'lit-html';
+import { render as shadyRender } from 'lit-html/lib/shady-render';
 import isFunction from 'lodash-es/isFunction';
 import { bindActionCreators, ActionCreatorsMapObject, Dispatch, Store, Unsubscribe } from 'redux';
 
@@ -36,18 +37,6 @@ export type RenderFunction = typeof render;
  * @template {OP} The type of the own properties passed to the element from the outside.
  */
 export declare class FitElement<S, P, OP> extends HTMLElement {
-    /**
-     * The 🔥-html function used to render to the dom.
-     *
-     * Can be either the one from lit-html or lit-html/extended.
-     */
-    renderFunction: RenderFunction;
-
-    /**
-     * The 🔥-html templating function.
-     */
-    templateFunction: (props: P) => TemplateResult;
-
     constructor(...args: any[]);
 
     connectedCallback();
@@ -108,20 +97,13 @@ export default function connect<S, SP, DP, OP = {}>(
 ): ClassConstructor<FitElement<S, SP & DP, OP>> {
     return class extends HTMLElement {
         private _isConnected: boolean = false;
+        private _nodeName: string = this.nodeName.toLowerCase();
         private _preparedDispatch: MapDispatchToPropsFn<S, DP, OP> | ActionCreatorsMapObject;
         private _preparedMapStateToProps: MapStateToPropsFn<S, SP, OP>;
         private _previousProps: SP & DP | null = null;
         private _renderEnqueued: boolean = false;
         private _store: Store<S>;
         private _unsubscribe: Unsubscribe;
-
-        get renderFunction(): RenderFunction {
-            return render;
-        }
-
-        get templateFunction(): (props: SP & DP) => TemplateResult {
-            return templateFn;
-        }
 
         constructor() {
             super();
@@ -205,7 +187,9 @@ export default function connect<S, SP, DP, OP = {}>(
             }
 
             this._previousProps = props;
-            this.renderFunction(templateFn(props), this.shadowRoot!);
+            window.ShadyCSS
+                ? shadyRender(templateFn(props), this.shadowRoot!, this._nodeName)
+                : render(templateFn(props), this.shadowRoot!);
         }
     };
 }
