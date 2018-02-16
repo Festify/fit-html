@@ -7,14 +7,14 @@
 
 ## Overview
 
-fit-html is a combination of [lit-html](https://github.com/PolymerLabs/lit-html), web components and [redux](http://redux.js.org/) bringing efficient rendering and a functional application architecture together. Yet, it still manages to keep the total size of the framework below 5KB<sup>1</sup>, including dependencies.
+fit-html is a combination of [lit-html](https://github.com/PolymerLabs/lit-html), web components and [redux](http://redux.js.org/) bringing efficient rendering and a functional application architecture together. Yet, the total size of the framework is below 5KB<sup>1</sup>, including dependencies.
 
 ## Small Example
 
 You need the following:
 ```js
 import { connect, createProvider, withExtended } from 'fit-html';
-import { html } from 'lit-html';
+import { html } from 'lit-html/lib/lit-extended';
 import { createStore } from 'redux';
 ```
 
@@ -57,11 +57,11 @@ const render = ({ addTodo, todos }) => html`
   </button>
 `;
 
-const TodosApp = withExtended(connect(
+const TodosApp = connect(
   state => ({ todos: state }),
   { addTodo },
   render
-));
+);
 
 customElements.define('todo-app', TodosApp);
 ```
@@ -86,4 +86,4 @@ Please see https://github.com/Festify/fit-html-demo for more and larger examples
 
 MIT
 
-<sup>1</sup>: Actually 4k right now
+<sup>1</sup>: fit-html weighs in at just about 4k right now
