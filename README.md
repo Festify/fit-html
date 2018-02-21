@@ -90,4 +90,4 @@ Please see https://github.com/Festify/fit-html-demo for more and larger examples
 
 MIT
 
-<sup>1</sup>: fit-html weighs in at just about 4k right now
+<sup>1</sup>: fit-html weighs in at about 3.2kb right now
