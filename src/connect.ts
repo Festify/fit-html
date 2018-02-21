@@ -155,9 +155,10 @@ export default function connect<S, SP, DP, OP = {}>(
 
             let node: any = this;
             while (node = node.parentNode || node.host) {
-                if (isReduxStore<S>(node._store || node.reduxStore)) {
-                    this._store = node._store || node.reduxStore;
-                    return this._store;
+                const maybeStore = node._store || node.reduxStore;
+                if (isReduxStore<S>(maybeStore)) {
+                    this._store = maybeStore;
+                    return maybeStore;
                 }
             }
 
