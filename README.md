@@ -82,6 +82,10 @@ customElements.define('todo-app', TodosApp);
 
 Please see https://github.com/Festify/fit-html-demo for more and larger examples.
 
+## Compatibility
+
+💪-html is written for use with evergreen browsers. Not so much for Internet Explorer (though we strive to become compatible with IE11 once lit-html itself is).
+
 ## License
 
 MIT
