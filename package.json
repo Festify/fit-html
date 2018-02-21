@@ -8,8 +8,24 @@
   "author": "Festify Dev Team <mail+git@festify.rocks>",
   "license": "MIT",
   "private": false,
+  "bundlesize": [
+    {
+      "path": "dist/bundle.min.js",
+      "maxSize": "1.5 kb"
+    },
+    {
+      "path": "dist/bundle+deps.min.js",
+      "maxSize": "3.5 kb"
+    }
+  ],
   "devDependencies": {
     "@types/lodash-es": "^4.17.0",
+    "bundlesize": "^0.16.0",
+    "rollup": "^0.56.2",
+    "rollup-plugin-babel-minify": "^4.0.0",
+    "rollup-plugin-commonjs": "^8.3.0",
+    "rollup-plugin-node-resolve": "^3.0.3",
+    "rollup-plugin-typescript2": "^0.11.1",
     "tslint": "^5.9.1",
     "typescript": "^2.5.3"
   },
@@ -19,6 +35,7 @@
   },
   "scripts": {
     "build": "yarn lint && tsc",
+    "check-size": "rollup -c && bundlesize && rm dist/bundle*",
     "fix": "tslint -p tsconfig.json --fix",
     "lint": "tslint -p tsconfig.json"
   }
