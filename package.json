@@ -11,11 +11,11 @@
   "bundlesize": [
     {
       "path": "dist/bundle.min.js",
-      "maxSize": "1.5 kb"
+      "maxSize": "2 kb"
     },
     {
       "path": "dist/bundle+deps.min.js",
-      "maxSize": "3.5 kb"
+      "maxSize": "5 kb"
     }
   ],
   "devDependencies": {
