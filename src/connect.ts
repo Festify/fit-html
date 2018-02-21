@@ -1,6 +1,5 @@
 import { render, PartCallback, TemplateResult } from 'lit-html';
 import { render as shadyRender } from 'lit-html/lib/shady-render';
-import isFunction from 'lodash-es/isFunction';
 import { bindActionCreators, ActionCreatorsMapObject, Dispatch, Store, Unsubscribe } from 'redux';
 
 import { ClassConstructor } from '.';
@@ -199,6 +198,11 @@ function isFactory<S, P, OP>(
     fn: MapStateToPropsFactory<S, P, OP> | MapStateToPropsFn<S, P, OP>,
 ): fn is MapStateToPropsFactory<S, P, OP> {
     return fn.length === 0;
+}
+
+// tslint:disable-next-line:ban-types
+function isFunction(f: any): f is Function {
+    return typeof f === 'function';
 }
 
 function isReduxStore<S>(obj: any): obj is Store<S> {
