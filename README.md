@@ -7,7 +7,7 @@
 
 ## Overview
 
-fit-html is a combination of [lit-html](https://github.com/PolymerLabs/lit-html), web components and [redux](http://redux.js.org/) bringing efficient rendering and a functional application architecture together. Yet, the total size of the framework is below 5KB<sup>1</sup>, including dependencies.
+fit-html is a combination of [lit-html](https://github.com/Polymer/lit-html), web components and [redux](http://redux.js.org/) bringing efficient rendering and a functional application architecture together. Yet, the total size of the framework is below 5KB<sup>1</sup>, including dependencies.
 
 ## Small Example
 
