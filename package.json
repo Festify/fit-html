@@ -1,6 +1,6 @@
 {
   "name": "fit-html",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "5KB functional Web Components without bloat",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,12 +10,8 @@
   "private": false,
   "bundlesize": [
     {
-      "path": "dist/bundle.min.js",
-      "maxSize": "2 kb"
-    },
-    {
-      "path": "dist/bundle+deps.min.js",
-      "maxSize": "5 kb"
+      "path": ".tmp/index.min.js",
+      "maxSize": "3 kb"
     }
   ],
   "devDependencies": {
@@ -25,6 +21,7 @@
     "rollup-plugin-babel-minify": "^4.0.0",
     "rollup-plugin-commonjs": "^8.3.0",
     "rollup-plugin-node-resolve": "^3.0.3",
+    "rollup-plugin-replace": "^2.0.0",
     "rollup-plugin-typescript2": "^0.11.1",
     "tslint": "^5.9.1",
     "typescript": "^2.5.3"
@@ -34,8 +31,8 @@
     "redux": "^3.7.2"
   },
   "scripts": {
-    "build": "yarn lint && tsc",
-    "check-size": "rollup -c && bundlesize && rm dist/bundle*",
+    "build": "yarn lint && tsc && NODE_ENV=production rollup -c",
+    "check-size": "yarn build && bundlesize",
     "fix": "tslint -p tsconfig.json --fix",
     "lint": "tslint -p tsconfig.json"
   }

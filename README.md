@@ -1,13 +1,14 @@
 # 💪 fit-html
 
 [![Travis](https://img.shields.io/travis/Festify/fit-html.svg)](https://travis-ci.org/Festify/fit-html)
+![Bundle Size](http://img.badgesize.io/https://unpkg.com/fit-html/.tmp/index.min.js?compression=gzip)
 [![Greenkeeper badge](https://badges.greenkeeper.io/Festify/fit-html.svg)](https://greenkeeper.io/)
 
-5KB web components + lit-html + redux library without bloat.
+3KB web components + lit-html + redux library without bloat.
 
 ## Overview
 
-fit-html is a combination of [lit-html](https://github.com/Polymer/lit-html), web components and [redux](http://redux.js.org/) bringing efficient rendering and a functional application architecture together. Yet, the total size of the framework is below 5KB<sup>1</sup>, including dependencies.
+fit-html is a combination of [lit-html](https://github.com/Polymer/lit-html), web components and [redux](http://redux.js.org/) bringing efficient rendering and a functional application architecture together. Yet, the total size of the framework is below 3KB, including dependencies.
 
 ## Small Example
 
@@ -89,5 +90,3 @@ Please see https://github.com/Festify/fit-html-demo for more and larger examples
 ## License
 
 MIT
-
-<sup>1</sup>: fit-html weighs in at about 3.2kb right now
