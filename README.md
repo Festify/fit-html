@@ -14,7 +14,7 @@ fit-html is a combination of [lit-html](https://github.com/Polymer/lit-html), we
 
 You need the following:
 ```js
-import { connect, createProvider } from 'fit-html';
+import { connect, withStore } from 'fit-html';
 import { html } from 'lit-html/lib/lit-extended';
 import { createStore } from 'redux';
 ```
@@ -31,12 +31,6 @@ const todos = (state = [], action) => {
 };
 
 const store = createStore(todos, ['Use Redux']);
-```
-
-Set up redux provider element (this must be at the root of your element tree):
-```js
-const provider = createProvider(store);
-customElements.define('redux-provider', provider);
 ```
 
 Define actions and view:
@@ -58,11 +52,14 @@ const render = ({ addTodo, todos }) => html`
   </button>
 `;
 
-const TodosApp = connect(
+// The withStore mixin is only required for the root element of your
+// app. All other 💪-elements will get the redux store from that element.
+
+const TodosApp = withStore(connect(
   state => ({ todos: state }),
   { addTodo },
   render
-);
+), store);
 
 customElements.define('todo-app', TodosApp);
 ```
@@ -74,9 +71,7 @@ customElements.define('todo-app', TodosApp);
     <title>My cool 💪-html app</title>
   </head>
   <body>
-    <redux-provider>
-      <todo-app></todo-app>
-    </redux-provider>
+    <todo-app></todo-app>
   </body>
 </html>
 ```

@@ -3,7 +3,6 @@ import { render as shadyRender } from 'lit-html/lib/shady-render';
 import { bindActionCreators, ActionCreatorsMapObject, Dispatch, Store, Unsubscribe } from 'redux';
 
 import { ClassConstructor } from '.';
-import { ProviderElement } from './provider';
 
 /**
  * The function that extracts required data out of the state and the passed props.
@@ -154,14 +153,13 @@ export default function connect<S, SP, DP, OP = {}>(
 
             let node: any = this;
             while (node = node.parentNode || node.host) {
-                const maybeStore = node._store || node.reduxStore;
-                if (isReduxStore<S>(maybeStore)) {
-                    this._store = maybeStore;
-                    return maybeStore;
+                if (isFunction(node.getStore)) {
+                    this._store = node.getStore();
+                    return this._store;
                 }
             }
 
-            throw new Error("💪-html: Missing redux store.\nSeems like you're using fit-html without a redux store. Please use the provider component to provide one to the element tree.");
+            throw new Error("💪-html: Missing redux store.\nSeems like you're using fit-html without a redux store. Please use a provider component to provide one to the element tree.");
         }
 
         getProps(ownProps = {} as OP): SP & DP {
@@ -203,10 +201,6 @@ function isFactory<S, P, OP>(
 // tslint:disable-next-line:ban-types
 function isFunction(f: any): f is Function {
     return typeof f === 'function';
-}
-
-function isReduxStore<S>(obj: any): obj is Store<S> {
-    return obj && obj.getState && obj.dispatch && obj.subscribe;
 }
 
 function shallowEqual(a, b) {

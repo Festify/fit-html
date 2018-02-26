@@ -1,17 +1,17 @@
 import { Store } from 'redux';
 
-import { ClassConstructor } from '.';
+import { ClassConstructor, FitElement } from '.';
 
 /**
- * A 💪 redux store provider element.
+ * Creates a subclass of the given HTML element that supplies the redux store to its DOM children.
  *
- * This element supplies the redux store to the 💪-html elements below it.
+ * Thus, all other 💪-elements must be a child of that element.
  * It works much like {@see https://github.com/reactjs/react-redux/blob/master/docs/api.md#provider-store}.
  *
  * When connected to the document, 💪-elements walk the dom upwards until they
  * either find another 💪-element that already has an initialized redux store
  * or the store provider element. They then take the store from that given
- * element, subscribe to it for rendering and cache it for further lookups
+ * element, subscribe to the store for rendering and cache it for further lookups
  * or potential 💪-children.
  *
  * You usually only need one per application as you would usually only use one
@@ -23,40 +23,39 @@ import { ClassConstructor } from '.';
  *
  * @example
  * ```html
- * <redux-provider-top-level>
- *     <!-- These two elements use the store from redux-provider-top-level -->
+ * <app-shell>
+ *     <!-- These two elements use the store from app-shell -->
  *     <fit-element-1></fit-element-1>
  *     <fit-element-2></fit-element-2>
  *
- *     <redux-provider-sub-level>
- *         <!-- These two elements use the store from redux-provider-sub-level -->
- *         <fit-element-2></fit-element-1>
+ *     <sub-shell>
+ *         <!-- These two elements use the store from sub-shell -->
+ *         <fit-element-1></fit-element-1>
  *         <fit-element-2></fit-element-2>
- *     </redux-provider-sub-level>
- * </redux-provider-top-level>
+ *     </sub-shell>
+ * </app-shell>
  * ```
- */
-export declare class ProviderElement<S> extends HTMLElement {
-    /**
-     * The previously created redux store to be accessible for all children.
-     */
-    reduxStore: Store<S>;
-}
-
-/**
- * Creates a new redux store provider element using the given store.
  *
- * This element supplies the redux store to the 💪-html elements below it.
- * Thus, all 💪-elements must be a child of this element.
- *
+ * @param {T} clazz The base class to extend from.
  * @param {Store<S>} store The redux store.
  * @returns {ProviderElement<S>} The redux store provider element class.
  * @template S
  */
-export default function createProvider<S>(store: Store<S>): ClassConstructor<ProviderElement<S>> {
-    return class extends HTMLElement {
-        get reduxStore(): Store<S> {
+export function withStore<T extends ClassConstructor<HTMLElement>, S>(clazz: T, store: Store<S>) {
+    return class extends clazz {
+        getStore(): Store<S> {
             return store;
         }
     };
 }
+
+/**
+ * Creates a new HTML element that supplies the redux store to its DOM children.
+ *
+ * Thus, all other 💪-elements must be a child of that element.
+ *
+ * @param {Store<S>} store The redux store.
+ * @deprecated Use `withStore` on your app shell / root element instead.
+ */
+export const createProvider = <S>(store: Store<S>) => withStore(HTMLElement, store);
+export default createProvider;
