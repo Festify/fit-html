@@ -1,7 +1,7 @@
 # 💪 fit-html
 
 [![Travis](https://img.shields.io/travis/Festify/fit-html.svg)](https://travis-ci.org/Festify/fit-html)
-![Bundle Size](http://img.badgesize.io/https://unpkg.com/fit-html/.tmp/index.min.js?compression=gzip)
+[![Bundle Size](http://img.badgesize.io/https://unpkg.com/fit-html/.tmp/index.min.js?compression=gzip)](https://www.npmjs.com/package/fit-html)
 [![Greenkeeper badge](https://badges.greenkeeper.io/Festify/fit-html.svg)](https://greenkeeper.io/)
 
 3KB web components + lit-html + redux library without bloat.
