@@ -14,7 +14,7 @@ fit-html is a combination of [lit-html](https://github.com/Polymer/lit-html), we
 
 You need the following:
 ```js
-import { connect, createProvider, withExtended } from 'fit-html';
+import { connect, createProvider } from 'fit-html';
 import { html } from 'lit-html/lib/lit-extended';
 import { createStore } from 'redux';
 ```
