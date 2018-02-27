@@ -31,8 +31,8 @@
     "redux": "^3.7.2"
   },
   "scripts": {
-    "build": "yarn lint && tsc && NODE_ENV=production rollup -c",
-    "check-size": "yarn build && bundlesize",
+    "build": "npm run lint && tsc && NODE_ENV=production rollup -c",
+    "check-size": "npm run build && bundlesize",
     "fix": "tslint -p tsconfig.json --fix",
     "lint": "tslint -p tsconfig.json"
   }
