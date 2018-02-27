@@ -52,16 +52,17 @@ const render = ({ addTodo, todos }) => html`
   </button>
 `;
 
-// The withStore mixin is only required for the root element of your
-// app. All other 💪-elements will get the redux store from that element.
-
-const TodosApp = withStore(connect(
+const TodosApp = connect(
   state => ({ todos: state }),
   { addTodo },
   render
-), store);
+);
 
-customElements.define('todo-app', TodosApp);
+// Define the custom element.
+//
+// The withStore mixin is only required for the root element of your
+// app. All other 💪-elements will get the redux store from that element.
+customElements.define('todo-app', withStore(TodosApp, store));
 ```
 
 `index.html`:
