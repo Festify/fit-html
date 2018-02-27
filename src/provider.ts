@@ -1,6 +1,6 @@
 import { Store } from 'redux';
 
-import { ClassConstructor, FitElement } from '.';
+import { ClassConstructor } from '.';
 
 /**
  * Creates a subclass of the given HTML element that supplies the redux store to its DOM children.
