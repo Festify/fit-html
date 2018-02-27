@@ -41,21 +41,10 @@ import { ClassConstructor } from '.';
  * @returns {ProviderElement<S>} The redux store provider element class.
  * @template S
  */
-export function withStore<T extends ClassConstructor<HTMLElement>, S>(clazz: T, store: Store<S>) {
+export default function withStore<T extends ClassConstructor<HTMLElement>, S>(clazz: T, store: Store<S>) {
     return class extends clazz {
         getStore(): Store<S> {
             return store;
         }
     };
 }
-
-/**
- * Creates a new HTML element that supplies the redux store to its DOM children.
- *
- * Thus, all other 💪-elements must be a child of that element.
- *
- * @param {Store<S>} store The redux store.
- * @deprecated Use `withStore` on your app shell / root element instead.
- */
-export const createProvider = <S>(store: Store<S>) => withStore(HTMLElement, store);
-export default createProvider;
