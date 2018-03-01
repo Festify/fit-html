@@ -1,4 +1,3 @@
-import { render, TemplateResult } from 'lit-html';
 import { bindActionCreators, ActionCreatorsMapObject, Dispatch, Store, Unsubscribe } from 'redux';
 
 import { ClassConstructor } from '.';
