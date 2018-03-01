@@ -155,7 +155,7 @@ export default function withFit<T extends ClassConstructor<HTMLElement>, OP, RP 
     return Element;
 }
 
-export function shallowEqual(a, b) {
+function shallowEqual(a, b) {
     if (a === b) {
         return true;
     }
