@@ -45,10 +45,11 @@ export declare class FitElementBase<OP, RP> extends HTMLElement {
     render();
 }
 
+/** The Constructor for 💪-html decorated classes. */
 export type FitElementConstructor<T extends ClassConstructor<HTMLElement>, OP, RP> =
     T & ClassConstructor<FitElementBase<OP, RP>>;
 
-export default function withFit<RP, OP = RP>(templ: TemplateFunction<RP>, desc?: AttributeDescriptors<OP>) {
+export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?: AttributeDescriptors<OP>) {
     return <T extends ClassConstructor<HTMLElement>>(base: T) => {
         const Element = class extends base {
             _isConnected = false;
