@@ -2,8 +2,7 @@ import { render, TemplateResult } from 'lit-html';
 import { bindActionCreators, ActionCreatorsMapObject, Dispatch, Store, Unsubscribe } from 'redux';
 
 import { ClassConstructor } from '.';
-import FitElement, { FitElementConstructor } from './fit-element';
-import withFit from './fit-element';
+import withFit, { FitElementConstructor, RenderFunction } from './fit-element';
 
 /**
  * The function that extracts required data out of the state and the passed props.
@@ -23,11 +22,6 @@ export type MapDispatchToPropsFn<S, P, OP> = (dispatch: Dispatch<S>, ownProps: O
  */
 export type MapStateToPropsFactory<S, P, OP> = () => MapStateToPropsFn<S, P, OP>;
 
-/**
- * A lit-html rendering function.
- */
-export type RenderFunction = typeof render;
-
 /* tslint:disable:max-line-length */
 
 /**
@@ -44,7 +38,7 @@ export default function connect<S, SP, DP, OP = {}>(
     mapDispatchToProps: MapDispatchToPropsFn<S, DP, OP> | DP,
 ) {
     return <B extends ClassConstructor<HTMLElement>, T extends FitElementConstructor<B, OP, SP & DP>>(
-        base: T | ((props: SP & DP) => TemplateResult),
+        base: T | RenderFunction<SP & DP>,
     ) => {
         let clazz: FitElementConstructor<ClassConstructor<HTMLElement>, OP, SP & DP>;
         if (isBaseClass(base)) {
@@ -52,7 +46,7 @@ export default function connect<S, SP, DP, OP = {}>(
         } else {
             clazz = class extends withFit<ClassConstructor<HTMLElement>, OP, SP & DP>(HTMLElement) {
                 get template() {
-                    return base as (props: SP & DP) => TemplateResult;
+                    return base as RenderFunction<SP & DP>;
                 }
             };
         }

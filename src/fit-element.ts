@@ -8,6 +8,11 @@ declare interface Window {
 }
 
 /**
+ * A lit-html rendering function.
+ */
+export type RenderFunction<P> = (props: P) => TemplateResult;
+
+/**
  * A value constructor.
  */
 export type Transformer = (value: string) => any;
@@ -26,7 +31,7 @@ export type AttributeDescriptors<OP> = {
 export declare class FitElementBase<OP, RP> extends HTMLElement {
     ownProps: OP;
     renderProps: RP;
-    readonly template: (props: RP) => TemplateResult;
+    readonly template: RenderFunction<RP>;
 
     constructor(...args: any[]);
 
@@ -78,7 +83,7 @@ export default function withFit<T extends ClassConstructor<HTMLElement>, OP, RP 
             this.enqueueRender();
         }
 
-        get template(): (props: RP) => TemplateResult {
+        get template(): RenderFunction<RP> {
             throw new Error("Missing template. Please override this getter.");
         }
 
