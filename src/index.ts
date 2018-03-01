@@ -1,10 +1,10 @@
 export { default as connect } from './connect';
 export { default as withFit } from './fit-element';
 export { default as withProps } from './props';
-export { default as withStore } from './provider';
+export { default as withStore } from './store';
 
 export * from './connect';
-export * from './provider';
+export * from './fit-element';
 
 /**
  * A class constructor function.
