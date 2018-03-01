@@ -29,6 +29,9 @@ export type AttributeDescriptors<OP> = {
 };
 
 export declare class FitElementBase<OP, RP> extends HTMLElement {
+    static readonly observedAttributes: string[];
+    static readonly properties: any;
+
     ownProps: OP;
     renderProps: RP;
     readonly template: TemplateFunction<RP>;
