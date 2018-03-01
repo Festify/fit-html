@@ -10,7 +10,7 @@ declare interface Window {
 /**
  * A lit-html rendering function.
  */
-export type RenderFunction<P> = (props: P) => TemplateResult;
+export type TemplateFunction<P> = (props: P) => TemplateResult;
 
 /**
  * A value constructor.
@@ -31,7 +31,7 @@ export type AttributeDescriptors<OP> = {
 export declare class FitElementBase<OP, RP> extends HTMLElement {
     ownProps: OP;
     renderProps: RP;
-    readonly template: RenderFunction<RP>;
+    readonly template: TemplateFunction<RP>;
 
     constructor(...args: any[]);
 
@@ -45,7 +45,7 @@ export declare class FitElementBase<OP, RP> extends HTMLElement {
 export type FitElementConstructor<T extends ClassConstructor<HTMLElement>, OP, RP> =
     T & ClassConstructor<FitElementBase<OP, RP>>;
 
-export default function withFit<RP>(rndr: RenderFunction<RP>) {
+export default function withFit<RP>(templ: TemplateFunction<RP>) {
     return <T extends ClassConstructor<HTMLElement>, OP = RP>(base: T) => {
         const Element = class extends base {
             _isConnected = false;
@@ -82,8 +82,8 @@ export default function withFit<RP>(rndr: RenderFunction<RP>) {
                 this.enqueueRender();
             }
 
-            get template(): RenderFunction<RP> {
-                return rndr;
+            get template(): TemplateFunction<RP> {
+                return templ;
             }
 
             constructor(...args: any[]) {

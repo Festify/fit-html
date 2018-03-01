@@ -2,7 +2,7 @@ import { render, TemplateResult } from 'lit-html';
 import { bindActionCreators, ActionCreatorsMapObject, Dispatch, Store, Unsubscribe } from 'redux';
 
 import { ClassConstructor } from '.';
-import withFit, { FitElementConstructor, RenderFunction } from './fit-element';
+import withFit, { FitElementConstructor, TemplateFunction } from './fit-element';
 
 /**
  * The function that extracts required data out of the state and the passed props.
@@ -38,7 +38,7 @@ export default function connect<S, SP, DP, OP = {}>(
     mapDispatchToProps: MapDispatchToPropsFn<S, DP, OP> | DP,
 ) {
     return <B extends ClassConstructor<HTMLElement>, T extends FitElementConstructor<B, OP, SP & DP>>(
-        base: T | RenderFunction<SP & DP>,
+        base: T | TemplateFunction<SP & DP>,
     ) => {
         const clazz: FitElementConstructor<ClassConstructor<HTMLElement>, OP, SP & DP> = isBaseClass(base)
             ? base
@@ -124,7 +124,7 @@ function isBaseClass<
     SP,
     DP
 >(
-    base: T | ((props: SP & DP) => TemplateResult),
+    base: T | TemplateFunction<SP & DP>,
 ): base is T {
     return base.prototype instanceof HTMLElement;
 }
