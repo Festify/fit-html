@@ -40,16 +40,9 @@ export default function connect<S, SP, DP, OP = {}>(
     return <B extends ClassConstructor<HTMLElement>, T extends FitElementConstructor<B, OP, SP & DP>>(
         base: T | RenderFunction<SP & DP>,
     ) => {
-        let clazz: FitElementConstructor<ClassConstructor<HTMLElement>, OP, SP & DP>;
-        if (isBaseClass(base)) {
-            clazz = base;
-        } else {
-            clazz = class extends withFit<ClassConstructor<HTMLElement>, OP, SP & DP>(HTMLElement) {
-                get template() {
-                    return base as RenderFunction<SP & DP>;
-                }
-            };
-        }
+        const clazz: FitElementConstructor<ClassConstructor<HTMLElement>, OP, SP & DP> = isBaseClass(base)
+            ? base
+            : withFit(base)(HTMLElement);
 
         return class extends clazz {
             _ownProps: OP;

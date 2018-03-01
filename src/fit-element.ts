@@ -45,123 +45,123 @@ export declare class FitElementBase<OP, RP> extends HTMLElement {
 export type FitElementConstructor<T extends ClassConstructor<HTMLElement>, OP, RP> =
     T & ClassConstructor<FitElementBase<OP, RP>>;
 
-export default function withFit<T extends ClassConstructor<HTMLElement>, OP, RP = OP>(
-    base: T,
-): FitElementConstructor<T, OP, RP> {
-    const Element = class extends base {
-        _isConnected = false;
-        _nodeName = this.nodeName.toLowerCase();
-        _renderEnqueued = false;
-        _renderProps: RP;
+export default function withFit<RP>(rndr: RenderFunction<RP>) {
+    return <T extends ClassConstructor<HTMLElement>, OP = RP>(base: T) => {
+        const Element = class extends base {
+            _isConnected = false;
+            _nodeName = this.nodeName.toLowerCase();
+            _renderEnqueued = false;
+            _renderProps: RP;
 
-        static get observedAttributes(): string[] {
-            return Object.keys(this.properties);
-        }
-
-        static get properties(): AttributeDescriptors<OP> {
-            return {} as AttributeDescriptors<OP>;
-        }
-
-        get ownProps(): OP {
-            return this.renderProps as any;
-        }
-
-        set ownProps(props: OP) {
-            this.renderProps = props as any;
-        }
-
-        get renderProps(): RP {
-            return this._renderProps;
-        }
-
-        set renderProps(props: RP) {
-            if (shallowEqual(props, this._renderProps)) {
-                return;
+            static get observedAttributes(): string[] {
+                return Object.keys(this.properties);
             }
 
-            this._renderProps = props;
-            this.enqueueRender();
-        }
+            static get properties(): AttributeDescriptors<OP> {
+                return {} as AttributeDescriptors<OP>;
+            }
 
-        get template(): RenderFunction<RP> {
-            throw new Error("Missing template. Please override this getter.");
-        }
+            get ownProps(): OP {
+                return this.renderProps as any;
+            }
 
-        constructor(...args: any[]) {
-            super(...args);
+            set ownProps(props: OP) {
+                this.renderProps = props as any;
+            }
 
-            for (const propName of Element.observedAttributes) {
-                Object.defineProperty(this, propName, {
-                    configurable: true,
-                    enumerable: true,
-                    get: () => this.ownProps[propName],
-                    set: val => {
-                        if (this[propName] === val) {
-                            return;
-                        }
+            get renderProps(): RP {
+                return this._renderProps;
+            }
 
-                        this.ownProps = {
-                            ...(this.ownProps as any),
-                            [propName]: val,
-                        };
-                    },
+            set renderProps(props: RP) {
+                if (shallowEqual(props, this._renderProps)) {
+                    return;
+                }
+
+                this._renderProps = props;
+                this.enqueueRender();
+            }
+
+            get template(): RenderFunction<RP> {
+                return rndr;
+            }
+
+            constructor(...args: any[]) {
+                super(...args);
+
+                for (const propName of Element.observedAttributes) {
+                    Object.defineProperty(this, propName, {
+                        configurable: true,
+                        enumerable: true,
+                        get: () => this.ownProps[propName],
+                        set: val => {
+                            if (this[propName] === val) {
+                                return;
+                            }
+
+                            this.ownProps = {
+                                ...(this.ownProps as any),
+                                [propName]: val,
+                            };
+                        },
+                    });
+                }
+
+                this.attachShadow({ mode: 'open' });
+            }
+
+            attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+                if (!(name in Element.properties) || oldValue === newValue) {
+                    return;
+                }
+
+                const transformer = Element.properties[name];
+                if (!transformer) {
+                    this[name] = newValue;
+                } else if (transformer === Boolean) {
+                    // tslint:disable-next-line:triple-equals
+                    this[name] = newValue != null;
+                } else {
+                    this[name] = transformer(newValue);
+                }
+            }
+
+            connectedCallback() {
+                this._isConnected = true;
+                this.enqueueRender();
+            }
+
+            disconnectedCallback() {
+                this._isConnected = false;
+            }
+
+            enqueueRender() {
+                if (this._renderEnqueued) {
+                    return;
+                }
+
+                this._renderEnqueued = true;
+                Promise.resolve().then(() => {
+                    this._renderEnqueued = false;
+                    if (!this._isConnected) {
+                        this.render();
+                    }
                 });
             }
 
-            this.attachShadow({ mode: 'open' });
-        }
-
-        attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-            if (!(name in Element.properties) || oldValue === newValue) {
-                return;
-            }
-
-            const transformer = Element.properties[name];
-            if (!transformer) {
-                this[name] = newValue;
-            } else if (transformer === Boolean) {
-                // tslint:disable-next-line:triple-equals
-                this[name] = newValue != null;
-            } else {
-                this[name] = transformer(newValue);
-            }
-        }
-
-        connectedCallback() {
-            this._isConnected = true;
-            this.enqueueRender();
-        }
-
-        disconnectedCallback() {
-            this._isConnected = false;
-        }
-
-        enqueueRender() {
-            if (this._renderEnqueued) {
-                return;
-            }
-
-            this._renderEnqueued = true;
-            Promise.resolve().then(() => {
-                this._renderEnqueued = false;
+            render() {
                 if (!this._isConnected) {
-                    this.render();
+                    return;
                 }
-            });
-        }
 
-        render() {
-            if (!this._isConnected) {
-                return;
+                window.ShadyCSS
+                    ? shadyRender(this.template(this.renderProps), this.shadowRoot!, this._nodeName)
+                    : render(this.template(this.renderProps), this.shadowRoot!);
             }
+        };
 
-            window.ShadyCSS
-                ? shadyRender(this.template(this.renderProps), this.shadowRoot!, this._nodeName)
-                : render(this.template(this.renderProps), this.shadowRoot!);
-        }
+        return Element;
     };
-
-    return Element;
 }
 
 function shallowEqual(a, b) {
