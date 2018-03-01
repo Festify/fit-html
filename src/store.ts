@@ -41,8 +41,8 @@ import { ClassConstructor } from '.';
  * @returns {ProviderElement<S>} The redux store provider element class.
  * @template S
  */
-export default function withStore<T extends ClassConstructor<HTMLElement>, S>(clazz: T, store: Store<S>) {
-    return class extends clazz {
+export default function withStore<S>(store: Store<S>) {
+    return <T extends ClassConstructor<HTMLElement>>(clazz: T) => class extends clazz {
         getStore(): Store<S> {
             return store;
         }
