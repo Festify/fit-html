@@ -42,7 +42,7 @@ export default function connect<S, SP, DP, OP = {}>(
     ) => {
         const clazz: FitElementConstructor<ClassConstructor<HTMLElement>, OP, SP & DP> = isBaseClass(base)
             ? base
-            : withFit(base)(HTMLElement);
+            : withFit<SP & DP, OP>(base)(HTMLElement);
 
         return class extends clazz {
             _ownProps: OP;

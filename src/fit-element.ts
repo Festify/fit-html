@@ -45,8 +45,8 @@ export declare class FitElementBase<OP, RP> extends HTMLElement {
 export type FitElementConstructor<T extends ClassConstructor<HTMLElement>, OP, RP> =
     T & ClassConstructor<FitElementBase<OP, RP>>;
 
-export default function withFit<RP>(templ: TemplateFunction<RP>) {
-    return <T extends ClassConstructor<HTMLElement>, OP = RP>(base: T) => {
+export default function withFit<RP, OP = RP>(templ: TemplateFunction<RP>, desc?: AttributeDescriptors<OP>) {
+    return <T extends ClassConstructor<HTMLElement>>(base: T) => {
         const Element = class extends base {
             _isConnected = false;
             _nodeName = this.nodeName.toLowerCase();
@@ -58,7 +58,7 @@ export default function withFit<RP>(templ: TemplateFunction<RP>) {
             }
 
             static get properties(): AttributeDescriptors<OP> {
-                return {} as AttributeDescriptors<OP>;
+                return desc || {} as AttributeDescriptors<OP>;
             }
 
             get ownProps(): OP {
