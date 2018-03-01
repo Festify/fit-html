@@ -3,6 +3,10 @@ import { render as shadyRender } from 'lit-html/lib/shady-render';
 
 import { ClassConstructor } from '.';
 
+declare interface Window {
+    ShadyCSS?: any;
+}
+
 /**
  * A value constructor.
  */
@@ -146,7 +150,7 @@ export default function withFit<T extends ClassConstructor<HTMLElement>, OP, RP 
                 return;
             }
 
-            (window as any).ShadyCSS
+            window.ShadyCSS
                 ? shadyRender(this.template(this.renderProps), this.shadowRoot!, this._nodeName)
                 : render(this.template(this.renderProps), this.shadowRoot!);
         }
