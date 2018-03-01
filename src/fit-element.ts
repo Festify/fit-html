@@ -148,7 +148,6 @@ export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?:
 
             connectedCallback() {
                 this._isConnected = true;
-                this.enqueueRender();
             }
 
             disconnectedCallback() {
