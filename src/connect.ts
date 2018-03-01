@@ -25,12 +25,11 @@ export type MapStateToPropsFactory<S, P, OP> = () => MapStateToPropsFn<S, P, OP>
 /* tslint:disable:max-line-length */
 
 /**
- * Creates a 💪 web component connected to the redux store.
+ * Creates a subclass of the given 💪 web component connected to the redux store.
  *
- * @param {MapStateToPropsFn<S, SP, OP>} mapStateToProps The MapStateToProps function. If you want to use ownProps, pass the return value through the {@link withProps} mixin.
- * @param {MapDispatchToPropsFn<S, DP, OP>} mapDispatchToProps The MapStateToDispatch function. If you want to use ownProps, pass the return value through the {@link withProps} mixin.
- * @param {(props: (SP & DP)) => TemplateResult} templateFn The 🔥-html templating function.
- * @returns {FitElement<S, SP & DP, OP>} A newly created 💪-element class.
+ * @param {MapStateToPropsFn<S, SP, OP>} mapStateToProps The MapStateToProps function or factory.
+ * @param {MapDispatchToPropsFn<S, DP, OP>} mapDispatchToProps The MapStateToDispatch function.
+ * @returns {<B extends <HTMLElement>, T extends FitElementConstructor<B, OP, SP & DP>>(base: (TemplateFunction<SP & DP> | T)) => {new(...args: any[]): {_ownProps: OP; _preparedDispatch: MapDispatchToPropsFn<S, DP, OP> | ActionCreatorsMapObject; _preparedMapStateToProps: MapStateToPropsFn<S, SP, OP>; _store: Store<S>; _unsubscribe: Unsubscribe; ownProps: any; connectedCallback(): void; disconnectedCallback(): void; getStore(): Store<S>; _computeProps(): void}}} The actual decorator function.
  * @template S, SP, DP, OP
  */
 export default function connect<S, SP, DP, OP = {}>(
@@ -116,6 +115,8 @@ export default function connect<S, SP, DP, OP = {}>(
         };
     };
 }
+
+/* tslint:enable */
 
 function isBaseClass<
     B extends ClassConstructor<HTMLElement>,

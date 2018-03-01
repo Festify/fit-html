@@ -28,6 +28,9 @@ export type AttributeDescriptors<OP> = {
     [key in keyof OP]: Transformer | null;
 };
 
+/**
+ * The shape of a 💪-html decorated class.
+ */
 export declare class FitElementBase<OP, RP> extends HTMLElement {
     static readonly observedAttributes: string[];
     static readonly properties: any;
@@ -45,12 +48,25 @@ export declare class FitElementBase<OP, RP> extends HTMLElement {
     render();
 }
 
-/** The Constructor for 💪-html decorated classes. */
+/**
+ * The Constructor for 💪-html decorated classes.
+ */
 export type FitElementConstructor<T extends ClassConstructor<HTMLElement>, OP, RP> =
     T & ClassConstructor<FitElementBase<OP, RP>>;
 
+/* tslint:disable:max-line-length */
+
+/**
+ * Creates a subclass of the given HTML element that uses lit-html rendering and listens
+ * for attribute and property changes.
+ *
+ * @param {TemplateFunction<RP>} templ The lit-html templating function.
+ * @param {AttributeDescriptors<OP>} desc Property descriptors to enable the attribute & property listening.
+ * @returns {<T extends <HTMLElement>>(base: T) => FitElementConstructor<T extends <HTMLElement>, OP, RP>} The actual decorator function
+ * @template OP, RP
+ */
 export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?: AttributeDescriptors<OP>) {
-    return <T extends ClassConstructor<HTMLElement>>(base: T) => {
+    return <T extends ClassConstructor<HTMLElement>>(base: T): FitElementConstructor<T, OP, RP> => {
         const Element = class extends base {
             _isConnected = false;
             _nodeName = this.nodeName.toLowerCase();
@@ -167,6 +183,8 @@ export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?:
         return Element;
     };
 }
+
+/* tslint:enable */
 
 function shallowEqual(a, b) {
     if (a === b) {
