@@ -22,6 +22,8 @@ import { ClassConstructor } from '.';
  * you can also nest them into each other. See the following example:
  *
  * @example
+ * Assume app-shell and sub-shell are given redux stores via `withStore`.
+ *
  * ```html
  * <app-shell>
  *     <!-- These two elements use the store from app-shell -->
@@ -43,7 +45,7 @@ import { ClassConstructor } from '.';
  * ```
  *
  * @param {Store<S>} store The redux store.
- * @returns {<T extends <HTMLElement>>(clazz: T) => {new(): {getStore(): Store<S>}}} The actual decorator function.
+ * @returns The decorator function.
  * @template S, T
  */
 export default function withStore<S>(store: Store<S>) {

@@ -8,7 +8,7 @@ declare interface Window {
 }
 
 /**
- * A lit-html rendering function.
+ * A lit-html template construction function.
  */
 export type TemplateFunction<P> = (props: P) => TemplateResult;
 
@@ -62,7 +62,7 @@ export type FitElementConstructor<T extends ClassConstructor<HTMLElement>, OP, R
  *
  * @param {TemplateFunction<RP>} templ The lit-html templating function.
  * @param {AttributeDescriptors<OP>} desc Property descriptors to enable the attribute & property listening.
- * @returns {<T extends <HTMLElement>>(base: T) => FitElementConstructor<T extends <HTMLElement>, OP, RP>} The actual decorator function
+ * @returns The decorator function.
  * @template OP, RP
  */
 export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?: AttributeDescriptors<OP>) {

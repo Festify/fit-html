@@ -28,7 +28,7 @@ export type MapStateToPropsFactory<S, P, OP> = () => MapStateToPropsFn<S, P, OP>
  *
  * @param {MapStateToPropsFn<S, SP, OP>} mapStateToProps The MapStateToProps function or factory.
  * @param {MapDispatchToPropsFn<S, DP, OP>} mapDispatchToProps The MapStateToDispatch function.
- * @returns {<B extends <HTMLElement>, T extends FitElementConstructor<B, OP, SP & DP>>(base: (TemplateFunction<SP & DP> | T)) => {new(...args: any[]): {_ownProps: OP; _preparedDispatch: MapDispatchToPropsFn<S, DP, OP> | ActionCreatorsMapObject; _preparedMapStateToProps: MapStateToPropsFn<S, SP, OP>; _store: Store<S>; _unsubscribe: Unsubscribe; ownProps: any; connectedCallback(): void; disconnectedCallback(): void; getStore(): Store<S>; _computeProps(): void}}} The actual decorator function.
+ * @returns The decorator function.
  * @template S, SP, DP, OP
  */
 export default function connect<S, SP, DP, OP = {}>(
