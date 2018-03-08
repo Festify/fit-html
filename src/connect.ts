@@ -38,9 +38,9 @@ export default function connect<S, SP, DP, OP = {}>(
     return <B extends ClassConstructor<HTMLElement>, T extends FitElementConstructor<B, OP, SP & DP>>(
         base: T | TemplateFunction<SP & DP>,
     ) => {
-        const clazz: FitElementConstructor<ClassConstructor<HTMLElement>, OP, SP & DP> = isBaseClass(base)
-            ? base
-            : withFit<OP, SP & DP>(base)(HTMLElement);
+        const clazz: FitElementConstructor<ClassConstructor<HTMLElement>, OP, SP & DP> = isTemplateFunction(base)
+            ? withFit<OP, SP & DP>(base)(HTMLElement)
+            : base;
 
         return class extends clazz {
             _ownProps: OP;
@@ -117,18 +117,6 @@ export default function connect<S, SP, DP, OP = {}>(
 
 /* tslint:enable */
 
-function isBaseClass<
-    B extends ClassConstructor<HTMLElement>,
-    T extends FitElementConstructor<B, OP, SP & DP>,
-    OP,
-    SP,
-    DP
->(
-    base: T | TemplateFunction<SP & DP>,
-): base is T {
-    return base.prototype instanceof HTMLElement;
-}
-
 function isFactory<S, P, OP>(
     fn: MapStateToPropsFactory<S, P, OP> | MapStateToPropsFn<S, P, OP>,
 ): fn is MapStateToPropsFactory<S, P, OP> {
@@ -138,4 +126,16 @@ function isFactory<S, P, OP>(
 // tslint:disable-next-line:ban-types
 function isFunction(f: any): f is Function {
     return typeof f === 'function';
+}
+
+function isTemplateFunction<
+    B extends ClassConstructor<HTMLElement>,
+    T extends FitElementConstructor<B, OP, SP & DP>,
+    OP,
+    SP,
+    DP
+>(
+    base: T | TemplateFunction<SP & DP>,
+): base is TemplateFunction<SP & DP> {
+    return !(base.prototype instanceof HTMLElement);
 }
