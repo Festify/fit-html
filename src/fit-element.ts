@@ -113,7 +113,9 @@ export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?:
                     Object.defineProperty(this, propName, {
                         configurable: true,
                         enumerable: true,
-                        get: () => this.ownProps[propName],
+                        get: () => this.ownProps
+                            ? this.ownProps[propName]
+                            : undefined,
                         set: val => {
                             if (this[propName] === val) {
                                 return;
