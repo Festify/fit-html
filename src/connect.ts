@@ -122,6 +122,9 @@ export default function connect<S, SP, DP, OP = {}>(
                 : bindActionCreators(mapDispatchToProps as any as ActionCreatorsMapObject, store.dispatch);
             this._unsubscribe = store.subscribe(() => this.enqueueRender());
 
+            if (window.ShadyCSS) {
+                window.ShadyCSS.styleElement(this);
+            }
             this.enqueueRender();
         }
 
