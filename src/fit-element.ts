@@ -149,6 +149,10 @@ export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?:
             }
 
             connectedCallback() {
+                if (window.ShadyCSS) {
+                    window.ShadyCSS.styleElement(this);
+                }
+
                 this._isConnected = true;
             }
 
