@@ -2,3 +2,4 @@ dist/
 node_modules/
 .rpt2_cache/
 .tmp/
+yarn-error.log
