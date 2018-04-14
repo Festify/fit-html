@@ -1,4 +1,4 @@
-import { render, TemplateResult } from 'lit-html';
+import { TemplateResult } from 'lit-html';
 import { render as shadyRender } from 'lit-html/lib/shady-render';
 
 import { ClassConstructor } from '.';
@@ -184,9 +184,7 @@ export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?:
                     return;
                 }
 
-                window.ShadyCSS
-                    ? shadyRender(this.template(this.renderProps), this.shadowRoot!, this._nodeName)
-                    : render(this.template(this.renderProps), this.shadowRoot!);
+                shadyRender(this.template(this.renderProps), this.shadowRoot!, this._nodeName);
             }
         };
 
