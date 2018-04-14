@@ -2,6 +2,7 @@ import { bindActionCreators, ActionCreatorsMapObject, Dispatch, Store, Unsubscri
 
 import { ClassConstructor } from '.';
 import withFit, { FitDecorated, TemplateFunction } from './fit-element';
+import { isFunction } from './util';
 
 /**
  * The function that extracts required data out of the state and the passed props.
@@ -164,11 +165,6 @@ function isFactory<S, P, OP>(
     fn: MapStateToPropsFactory<S, P, OP> | MapStateToPropsFn<S, P, OP>,
 ): fn is MapStateToPropsFactory<S, P, OP> {
     return fn.length === 0;
-}
-
-// tslint:disable-next-line:ban-types
-function isFunction(f: any): f is Function {
-    return typeof f === 'function';
 }
 
 function isTemplateFunction<

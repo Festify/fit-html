@@ -2,6 +2,7 @@ import { TemplateResult } from 'lit-html';
 import { render as shadyRender } from 'lit-html/lib/shady-render';
 
 import { ClassConstructor } from '.';
+import { shallowEqual } from './util';
 
 declare interface Window {
     ShadyCSS?: any;
@@ -193,27 +194,3 @@ export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?:
 }
 
 /* tslint:enable */
-
-function shallowEqual(a, b) {
-    if (a === b) {
-        return true;
-    }
-    if (a == null || b == null) {
-        return false;
-    }
-
-    const aKeys = Object.keys(a);
-    const bKeys = Object.keys(b);
-
-    if (aKeys.length !== bKeys.length) {
-        return false;
-    }
-
-    for (const key of aKeys) {
-        if (a[key] !== b[key]) {
-            return false;
-        }
-    }
-
-    return true;
-}
