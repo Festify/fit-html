@@ -60,8 +60,6 @@ export interface FitElementConstructor<OP, RP> {
     new(...args: any[]): FitElement<OP, RP>;
 }
 
-/* tslint:disable:max-line-length */
-
 /**
  * Creates a subclass of the given HTML element that uses lit-html rendering and listens
  * for attribute and property changes.
@@ -192,5 +190,3 @@ export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?:
         return Element;
     };
 }
-
-/* tslint:enable */
