@@ -38,10 +38,27 @@ export type ConnectedElement<
 >
     = T & ClassConstructor<ConnectElement<S>>;
 
+/**
+ * The type of decorator wrapping a templating function.
+ */
+export type TemplateDecorator<S, SP, DP, OP> = (fn: TemplateFunction<SP & DP>) => ConnectedElement<
+    S, SP, DP, OP,
+    typeof HTMLElement,
+    FitDecorated<typeof HTMLElement, OP, SP & DP>
+>;
+
+/**
+ * The type of decorator wrapping a connected element.
+ */
+export type ElementDecorator<S, SP, DP, OP> = <
+    B extends ClassConstructor<HTMLElement>,
+    T extends FitDecorated<B, OP, SP & DP>
+>(base: T) => ConnectedElement<S, SP, DP, OP, B, T>;
+
 /* tslint:disable:max-line-length */
 
 /**
- * Creates a subclass of the given 💪 web component connected to the redux store.
+ * Creates a decorator to create 💪 web components using the given template function / base class.
  *
  * @param {MapStateToPropsFn<S, SP, OP>} mapStateToProps The MapStateToProps function or factory.
  * @param {MapDispatchToPropsFn<S, DP, OP>} mapDispatchToProps The MapStateToDispatch function.
@@ -51,79 +68,90 @@ export type ConnectedElement<
 export default function connect<S, SP, DP, OP = {}>(
     mapStateToProps: MapStateToPropsFactory<S, SP, OP> | MapStateToPropsFn<S, SP, OP>,
     mapDispatchToProps: MapDispatchToPropsFn<S, DP, OP> | DP,
+): TemplateDecorator<S, SP, DP, OP> & ElementDecorator<S, SP, DP, OP>;
+
+// We declare the exported typings separately for now (above).
+
+export default function connect<S, SP, DP, OP = {}>(
+    mapStateToProps: MapStateToPropsFactory<S, SP, OP> | MapStateToPropsFn<S, SP, OP>,
+    mapDispatchToProps: MapDispatchToPropsFn<S, DP, OP> | DP,
 ) {
     return <
         B extends ClassConstructor<HTMLElement>,
         T extends FitDecorated<B, OP, SP & DP>,
-    >(base: T): ConnectedElement<S, SP, DP, OP, B, T> => class extends base {
-        _ownProps: OP;
-        _preparedDispatch: MapDispatchToPropsFn<S, DP, OP> | ActionCreatorsMapObject;
-        _preparedMapStateToProps: MapStateToPropsFn<S, SP, OP>;
-        _store: Store<S>;
-        _unsubscribe: Unsubscribe;
+    >(b: T | TemplateFunction<SP & DP>) => {
+        const base: ClassConstructor<any> = isTemplateFunction(b) ? withFit(b)(HTMLElement) : b;
 
-        get ownProps() {
-            return super.ownProps;
-        }
+        return class extends base {
+            _ownProps: OP;
+            _preparedDispatch: MapDispatchToPropsFn<S, DP, OP> | ActionCreatorsMapObject;
+            _preparedMapStateToProps: MapStateToPropsFn<S, SP, OP>;
+            _store: Store<S>;
+            _unsubscribe: Unsubscribe;
 
-        set ownProps(props: OP) {
-            super.ownProps = props;
-            this._computeProps();
-        }
-
-        constructor(...args: any[]) {
-            super(...args);
-
-            this._preparedMapStateToProps = isFactory(mapStateToProps)
-                ? mapStateToProps()
-                : mapStateToProps;
-        }
-
-        connectedCallback() {
-            super.connectedCallback();
-
-            const store = this.getStore();
-            this._preparedDispatch = isFunction(mapDispatchToProps)
-                ? mapDispatchToProps
-                : bindActionCreators(mapDispatchToProps as any as ActionCreatorsMapObject, store.dispatch);
-            this._unsubscribe = store.subscribe(() => this._computeProps());
-
-            this._computeProps();
-        }
-
-        disconnectedCallback() {
-            super.disconnectedCallback();
-
-            this._unsubscribe();
-            this._store = undefined!;
-        }
-
-        getStore(): Store<S> {
-            if (this._store) {
-                return this._store;
+            get ownProps() {
+                return super.ownProps;
             }
 
-            let node: any = this;
-            while (node = node.parentNode || node.host) {
-                if (isFunction(node.getStore)) {
-                    this._store = node.getStore();
+            set ownProps(props: OP) {
+                super.ownProps = props;
+                this._computeProps();
+            }
+
+            constructor(...args: any[]) {
+                super(...args);
+
+                this._preparedMapStateToProps = isFactory(mapStateToProps)
+                    ? mapStateToProps()
+                    : mapStateToProps;
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+
+                const store = this.getStore();
+                this._preparedDispatch = isFunction(mapDispatchToProps)
+                    ? mapDispatchToProps
+                    : bindActionCreators(mapDispatchToProps as any as ActionCreatorsMapObject, store.dispatch);
+                this._unsubscribe = store.subscribe(() => this._computeProps());
+
+                this._computeProps();
+            }
+
+            disconnectedCallback() {
+                super.disconnectedCallback();
+
+                this._unsubscribe();
+                this._store = undefined!;
+            }
+
+            getStore(): Store<S> {
+                if (this._store) {
                     return this._store;
                 }
+
+                let node: any = this;
+                while (node = node.parentNode || node.host) {
+                    if (isFunction(node.getStore)) {
+                        this._store = node.getStore();
+                        return this._store;
+                    }
+                }
+
+                throw new Error("💪-html: Missing redux store.\nSeems like you're using fit-html without a redux store. Please use a provider component to provide one to the element tree.");
             }
 
-            throw new Error("💪-html: Missing redux store.\nSeems like you're using fit-html without a redux store. Please use a provider component to provide one to the element tree.");
-        }
-
-        _computeProps() {
-            const store = this.getStore();
-            this.renderProps = Object.assign(
-                {},
-                this._preparedMapStateToProps(store.getState(), this.ownProps),
-                isFunction(this._preparedDispatch)
-                    ? this._preparedDispatch(store.dispatch, this.ownProps)
-                    : this._preparedDispatch,
-            ) as SP & DP;
-        }
+            _computeProps() {
+                const store = this.getStore();
+                this.renderProps = Object.assign(
+                    {},
+                    this._preparedMapStateToProps(store.getState(), this.ownProps),
+                    isFunction(this._preparedDispatch)
+                        ? this._preparedDispatch(store.dispatch, this.ownProps)
+                        : this._preparedDispatch,
+                ) as SP & DP;
+            }
+        };
     };
 }
 
