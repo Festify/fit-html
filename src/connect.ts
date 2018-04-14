@@ -91,11 +91,11 @@ export default function connect<S, SP, DP, OP = {}>(
             _unsubscribe: Unsubscribe;
 
             get ownProps() {
-                return super.ownProps;
+                return this._ownProps;
             }
 
             set ownProps(props: OP) {
-                super.ownProps = props;
+                this._ownProps = props;
                 this._computeProps();
             }
 
