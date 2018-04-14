@@ -96,7 +96,7 @@ export default function connect<S, SP, DP, OP = {}>(
 
             set ownProps(props: OP) {
                 this._ownProps = props;
-                this._computeProps();
+                Promise.resolve().then(() => this._computeProps());
             }
 
             constructor(...args: any[]) {
