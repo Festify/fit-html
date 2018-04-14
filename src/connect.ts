@@ -116,7 +116,7 @@ export default function connect<S, SP, DP, OP = {}>(
                     : bindActionCreators(mapDispatchToProps as any as ActionCreatorsMapObject, store.dispatch);
                 this._unsubscribe = store.subscribe(() => this._computeProps());
 
-                this._computeProps();
+                Promise.resolve().then(() => this._computeProps());
             }
 
             disconnectedCallback() {
