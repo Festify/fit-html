@@ -1,6 +1,6 @@
 import { Store } from 'redux';
 
-import { ClassConstructor } from '.';
+import { ClassConstructor, ConnectElement } from '.';
 
 /**
  * Creates a subclass of the given HTML element that supplies the redux store to
@@ -49,9 +49,11 @@ import { ClassConstructor } from '.';
  * @template S, T
  */
 export default function withStore<S>(store: Store<S>) {
-    return <T extends ClassConstructor<HTMLElement>>(clazz: T) => class extends clazz {
-        getStore(): Store<S> {
-            return store;
-        }
+    return <T extends ClassConstructor<HTMLElement>>(clazz: T): T & ClassConstructor<ConnectElement<S>> => {
+        return class extends clazz {
+            getStore(): Store<S> {
+                return store;
+            }
+        };
     };
 }
