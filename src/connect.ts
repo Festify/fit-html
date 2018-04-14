@@ -126,6 +126,9 @@ export default function connect<S, SP, DP, OP = {}>(
             }
 
             getStore(): Store<S> {
+                if (isFunction(super.getStore)) {
+                    return super.getStore();
+                }
                 if (this._store) {
                     return this._store;
                 }
