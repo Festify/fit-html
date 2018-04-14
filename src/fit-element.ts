@@ -2,7 +2,7 @@ import { TemplateResult } from 'lit-html';
 import { render as shadyRender } from 'lit-html/lib/shady-render';
 
 import { ClassConstructor } from '.';
-import { shallowEqual } from './util';
+import { isFunction, shallowEqual } from './util';
 
 declare interface Window {
     ShadyCSS?: any;
@@ -30,10 +30,22 @@ export type AttributeDescriptors<OP> = {
 };
 
 /**
- * A 💪-html decorated class.
+ * A custom element with its lifecycle callbacks.
  */
-export type FitDecorated<B extends ClassConstructor<HTMLElement>, OP, RP> =
-    B & FitElementConstructor<OP, RP>;
+export interface CustomElement extends HTMLElement {
+    attributeChangedCallback?(name: string, oldValue: string, newValue: string);
+    connectedCallback?();
+    disconnectedCallback?();
+}
+
+/**
+ * A constructor of a custom element.
+ */
+export interface CustomElementConstructor {
+    observedAttributes?: string[];
+
+    new(...args: any[]): CustomElement;
+}
 
 /**
  * A 💪-html decorated element.
@@ -61,6 +73,12 @@ export interface FitElementConstructor<OP, RP> {
 }
 
 /**
+ * A 💪-html decorated class.
+ */
+export type FitDecorated<B extends ClassConstructor<HTMLElement>, OP, RP> =
+    B & FitElementConstructor<OP, RP>;
+
+/**
  * Creates a subclass of the given HTML element that uses lit-html rendering and listens
  * for attribute and property changes.
  *
@@ -70,7 +88,7 @@ export interface FitElementConstructor<OP, RP> {
  * @template OP, RP
  */
 export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?: AttributeDescriptors<OP>) {
-    return <T extends ClassConstructor<HTMLElement>>(base: T): FitDecorated<T, OP, RP> => {
+    return <T extends CustomElementConstructor>(base: T): FitDecorated<T, OP, RP> => {
         const Element = class extends base {
             _isConnected = false;
             _nodeName = this.nodeName.toLowerCase();
@@ -78,7 +96,10 @@ export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?:
             _renderProps: RP;
 
             static get observedAttributes(): string[] {
-                return Object.keys(this.properties);
+                const propKeys = Object.keys(this.properties);
+                return (base.observedAttributes || [])
+                    .filter(attr => propKeys.indexOf(attr) === -1)
+                    .concat(propKeys);
             }
 
             static get properties(): AttributeDescriptors<OP> {
@@ -113,7 +134,9 @@ export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?:
             constructor(...args: any[]) {
                 super(...args);
 
-                for (const propName of Element.observedAttributes) {
+                // Only iterate over properties declared in _this_ class, not over
+                // the ones from the superclass.
+                for (const propName of Object.keys(Element.properties)) {
                     Object.defineProperty(this, propName, {
                         configurable: true,
                         enumerable: true,
@@ -137,6 +160,9 @@ export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?:
             }
 
             attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+                if (isFunction(super.attributeChangedCallback)) {
+                    super.attributeChangedCallback(name, oldValue, newValue);
+                }
                 if (!(name in Element.properties) || oldValue === newValue) {
                     return;
                 }
@@ -153,6 +179,9 @@ export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?:
             }
 
             connectedCallback() {
+                if (isFunction(super.connectedCallback)) {
+                    super.connectedCallback();
+                }
                 if (window.ShadyCSS) {
                     window.ShadyCSS.styleElement(this);
                 }
@@ -161,6 +190,9 @@ export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?:
             }
 
             disconnectedCallback() {
+                if (isFunction(super.disconnectedCallback)) {
+                    super.disconnectedCallback();
+                }
                 this._isConnected = false;
             }
 
