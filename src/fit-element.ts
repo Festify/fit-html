@@ -205,15 +205,13 @@ export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?:
                 this._renderEnqueued = true;
                 Promise.resolve().then(() => {
                     this._renderEnqueued = false;
-                    this.render();
+                    if (this._isConnected) {
+                        this.render();
+                    }
                 });
             }
 
             render() {
-                if (!this._isConnected) {
-                    return;
-                }
-
                 shadyRender(this.template(this.renderProps), this.shadowRoot!, this._nodeName);
             }
         };
