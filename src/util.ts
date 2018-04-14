@@ -4,7 +4,8 @@ export function isFunction(f: any): f is Function {
 }
 
 export function shallowEqual(a, b) {
-    if (a === b) {
+    // tslint:disable-next-line:triple-equals
+    if (a == b) {
         return true;
     }
     if (a == null || b == null) {
