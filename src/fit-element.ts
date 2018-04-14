@@ -29,17 +29,18 @@ export type AttributeDescriptors<OP> = {
 };
 
 /**
- * The shape of a 💪-html decorated class.
+ * A 💪-html decorated class.
  */
-export declare class FitElementBase<OP, RP> extends HTMLElement {
-    static readonly observedAttributes: string[];
-    static readonly properties: any;
+export type FitDecorated<B extends ClassConstructor<HTMLElement>, OP, RP> =
+    B & FitElementConstructor<OP, RP>;
 
+/**
+ * A 💪-html decorated element.
+ */
+export interface FitElement<OP, RP> {
     ownProps: OP;
     renderProps: RP;
-    readonly template: TemplateFunction<RP>;
-
-    constructor(...args: any[]);
+    template: TemplateFunction<RP>;
 
     attributeChangedCallback(name: string, oldValue: string, newValue: string);
     connectedCallback();
@@ -49,10 +50,14 @@ export declare class FitElementBase<OP, RP> extends HTMLElement {
 }
 
 /**
- * The Constructor for 💪-html decorated classes.
+ * The constructor for a 💪-html element.
  */
-export type FitElementConstructor<T extends ClassConstructor<HTMLElement>, OP, RP> =
-    T & ClassConstructor<FitElementBase<OP, RP>>;
+export interface FitElementConstructor<OP, RP> {
+    observedAttributes: string[];
+    properties: AttributeDescriptors<OP>;
+
+    new(...args: any[]): FitElement<OP, RP>;
+}
 
 /* tslint:disable:max-line-length */
 
@@ -66,7 +71,7 @@ export type FitElementConstructor<T extends ClassConstructor<HTMLElement>, OP, R
  * @template OP, RP
  */
 export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?: AttributeDescriptors<OP>) {
-    return <T extends ClassConstructor<HTMLElement>>(base: T): FitElementConstructor<T, OP, RP> => {
+    return <T extends ClassConstructor<HTMLElement>>(base: T): FitDecorated<T, OP, RP> => {
         const Element = class extends base {
             _isConnected = false;
             _nodeName = this.nodeName.toLowerCase();
