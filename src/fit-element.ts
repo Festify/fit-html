@@ -193,6 +193,7 @@ export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?:
                 if (isFunction(super.disconnectedCallback)) {
                     super.disconnectedCallback();
                 }
+
                 this._isConnected = false;
             }
 
@@ -204,9 +205,7 @@ export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?:
                 this._renderEnqueued = true;
                 Promise.resolve().then(() => {
                     this._renderEnqueued = false;
-                    if (!this._isConnected) {
-                        this.render();
-                    }
+                    this.render();
                 });
             }
 
