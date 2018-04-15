@@ -151,18 +151,17 @@ export default function connect<S, SP, DP, OP = {}>(
                     return;
                 }
 
-                this._propsEnqueued = true,
+                this._propsEnqueued = true;
                 Promise.resolve().then(() => {
                     this._propsEnqueued = false;
 
                     const store = this.getStore();
-                    this.renderProps = Object.assign(
-                        {},
-                        this._preparedMapStateToProps(store.getState(), this.ownProps),
-                        isFunction(this._preparedDispatch)
-                            ? this._preparedDispatch(store.dispatch, this.ownProps)
-                            : this._preparedDispatch,
-                    ) as SP & DP;
+                    const props = this._preparedMapStateToProps(store.getState(), this.ownProps);
+                    const dispatch = isFunction(this._preparedDispatch)
+                        ? this._preparedDispatch(store.dispatch, this.ownProps)
+                        : this._preparedDispatch;
+
+                    this.renderProps = Object.assign({}, props, dispatch) as SP & DP;
                 });
             }
         };
