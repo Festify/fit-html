@@ -84,6 +84,7 @@ export default function connect<S, SP, DP, OP = {}>(
         const base: ClassConstructor<any> = isTemplateFunction(b) ? withFit(b)(HTMLElement) : b;
 
         return class extends base {
+            _propsEnqueued: boolean = false;
             _ownProps: OP;
             _preparedDispatch: MapDispatchToPropsFn<S, DP, OP> | ActionCreatorsMapObject;
             _preparedMapStateToProps: MapStateToPropsFn<S, SP, OP>;
@@ -96,7 +97,7 @@ export default function connect<S, SP, DP, OP = {}>(
 
             set ownProps(props: OP) {
                 this._ownProps = props;
-                Promise.resolve().then(() => this._computeProps());
+                this._computeProps();
             }
 
             constructor(...args: any[]) {
@@ -116,7 +117,7 @@ export default function connect<S, SP, DP, OP = {}>(
                     : bindActionCreators(mapDispatchToProps as any as ActionCreatorsMapObject, store.dispatch);
                 this._unsubscribe = store.subscribe(() => this._computeProps());
 
-                Promise.resolve().then(() => this._computeProps());
+                this._computeProps();
             }
 
             disconnectedCallback() {
@@ -146,14 +147,23 @@ export default function connect<S, SP, DP, OP = {}>(
             }
 
             _computeProps() {
-                const store = this.getStore();
-                this.renderProps = Object.assign(
-                    {},
-                    this._preparedMapStateToProps(store.getState(), this.ownProps),
-                    isFunction(this._preparedDispatch)
-                        ? this._preparedDispatch(store.dispatch, this.ownProps)
-                        : this._preparedDispatch,
-                ) as SP & DP;
+                if (this._propsEnqueued) {
+                    return;
+                }
+
+                this._propsEnqueued = true,
+                Promise.resolve().then(() => {
+                    this._propsEnqueued = false;
+
+                    const store = this.getStore();
+                    this.renderProps = Object.assign(
+                        {},
+                        this._preparedMapStateToProps(store.getState(), this.ownProps),
+                        isFunction(this._preparedDispatch)
+                            ? this._preparedDispatch(store.dispatch, this.ownProps)
+                            : this._preparedDispatch,
+                    ) as SP & DP;
+                });
             }
         };
     };
