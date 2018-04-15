@@ -15,7 +15,6 @@
     }
   ],
   "devDependencies": {
-    "@types/lodash-es": "^4.17.0",
     "bundlesize": "^0.17.0",
     "rollup": "^0.57.0",
     "rollup-plugin-babel-minify": "^4.0.0",
