@@ -12,7 +12,7 @@ export type MapStateToPropsFn<S, P, OP> = (state: S, ownProps: OP) => P;
 /**
  * The function that sets up the view actions based on the store's dispatch function.
  */
-export type MapDispatchToPropsFn<S, P, OP> = (dispatch: Dispatch<S>, ownProps: OP) => P;
+export type MapDispatchToPropsFn<P, OP> = (dispatch: Dispatch, ownProps: OP) => P;
 
 /**
  * A factory method for creating a specialized {@ref MapStateToPropsFn<S, P, OP>}
@@ -62,20 +62,20 @@ export type ElementDecorator<S, SP, DP, OP> = <
  * Creates a decorator to create 💪 web components using the given template function / base class.
  *
  * @param {MapStateToPropsFn<S, SP, OP>} mapStateToProps The MapStateToProps function or factory.
- * @param {MapDispatchToPropsFn<S, DP, OP>} mapDispatchToProps The MapStateToDispatch function.
+ * @param {MapDispatchToPropsFn<DP, OP>} mapDispatchToProps The MapStateToDispatch function.
  * @returns The decorator function.
  * @template S, SP, DP, OP
  */
 export default function connect<S, SP, DP, OP = {}>(
     mapStateToProps: MapStateToPropsFactory<S, SP, OP> | MapStateToPropsFn<S, SP, OP>,
-    mapDispatchToProps: MapDispatchToPropsFn<S, DP, OP> | DP,
+    mapDispatchToProps: MapDispatchToPropsFn<DP, OP> | DP,
 ): TemplateDecorator<S, SP, DP, OP> & ElementDecorator<S, SP, DP, OP>;
 
 // We declare the exported typings separately for now (above).
 
 export default function connect<S, SP, DP, OP = {}>(
     mapStateToProps: MapStateToPropsFactory<S, SP, OP> | MapStateToPropsFn<S, SP, OP>,
-    mapDispatchToProps: MapDispatchToPropsFn<S, DP, OP> | DP,
+    mapDispatchToProps: MapDispatchToPropsFn<DP, OP> | DP,
 ) {
     return <
         B extends ClassConstructor<HTMLElement>,
@@ -86,7 +86,7 @@ export default function connect<S, SP, DP, OP = {}>(
         return class extends base {
             _propsEnqueued: boolean = false;
             _ownProps: OP;
-            _preparedDispatch: MapDispatchToPropsFn<S, DP, OP> | ActionCreatorsMapObject;
+            _preparedDispatch: MapDispatchToPropsFn<DP, OP> | ActionCreatorsMapObject;
             _preparedMapStateToProps: MapStateToPropsFn<S, SP, OP>;
             _store: Store<S>;
             _unsubscribe: Unsubscribe;
