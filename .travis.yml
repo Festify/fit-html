@@ -4,7 +4,7 @@ node_js: node
 
 before_install: yarn global add greenkeeper-lockfile@1
 
-install: yarn add -P redux lit-html
+install: yarn add -P redux lit-html && git reset --hard
 
 before_script: greenkeeper-lockfile-update
 
