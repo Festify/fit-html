@@ -109,7 +109,7 @@ export default function connect<S, SP, DP, OP = {}>(
             }
 
             connectedCallback() {
-                super.connectedCallback();
+                super.connectedCallback(false);
 
                 const store = this.getStore();
                 this._preparedDispatch = isFunction(mapDispatchToProps)

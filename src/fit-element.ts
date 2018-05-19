@@ -178,7 +178,7 @@ export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?:
                 }
             }
 
-            connectedCallback() {
+            connectedCallback(render = true) {
                 if (isFunction(super.connectedCallback)) {
                     super.connectedCallback();
                 }
@@ -187,6 +187,9 @@ export default function withFit<OP, RP = OP>(templ: TemplateFunction<RP>, desc?:
                 }
 
                 this._isConnected = true;
+                if (render) {
+                    this.enqueueRender();
+                }
             }
 
             disconnectedCallback() {
