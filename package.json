@@ -16,7 +16,7 @@
   ],
   "devDependencies": {
     "bundlesize": "^0.17.0",
-    "rollup": "^0.64.1",
+    "rollup": "^1.0.0",
     "rollup-plugin-babel-minify": "^5.0.0",
     "rollup-plugin-commonjs": "^9.0.0",
     "rollup-plugin-node-resolve": "^3.0.3",
