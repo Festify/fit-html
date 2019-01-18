@@ -759,9 +759,10 @@ form-data@~2.3.1:
     combined-stream "1.0.6"
     mime-types "^2.1.12"
 
-fs-extra@5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-5.0.0.tgz#414d0110cdd06705734d055652c5411260c31abd"
+fs-extra@7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-7.0.1.tgz#4f189c44aa123b895f722804f55ea23eadc348e9"
+  integrity sha512-YJDaCJZEnBmcbw13fvdAM9AwNOJwOzrE4pqMqBq5nFiEqXUqHwlK4B+3pUw6JNvfSPtX05xFHtYy/1ni01eGCw==
   dependencies:
     graceful-fs "^4.1.2"
     jsonfile "^4.0.0"
@@ -1569,18 +1570,20 @@ rollup-plugin-replace@^2.0.0:
     minimatch "^3.0.2"
     rollup-pluginutils "^2.0.1"
 
-rollup-plugin-typescript2@^0.16.1:
-  version "0.16.1"
-  resolved "https://registry.yarnpkg.com/rollup-plugin-typescript2/-/rollup-plugin-typescript2-0.16.1.tgz#72e1f8a2e450550eabdc3d474e735feae322b474"
+rollup-plugin-typescript2@^0.19.1:
+  version "0.19.1"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-typescript2/-/rollup-plugin-typescript2-0.19.1.tgz#cf2b7db289976c8d4eb3cc8613cc8db01506e43b"
+  integrity sha512-cosD7Cvl7Z0koFeR92pe3+6IibzAm4rtn4ABNzGWPfBQY/B97MFDznNPnc8bKHDYkve+WkhmjT0eWn7xf9oGvA==
   dependencies:
-    fs-extra "5.0.0"
+    fs-extra "7.0.1"
     resolve "1.8.1"
-    rollup-pluginutils "2.3.0"
+    rollup-pluginutils "2.3.3"
     tslib "1.9.3"
 
-rollup-pluginutils@2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/rollup-pluginutils/-/rollup-pluginutils-2.3.0.tgz#478ace04bd7f6da2e724356ca798214884738fc4"
+rollup-pluginutils@2.3.3:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/rollup-pluginutils/-/rollup-pluginutils-2.3.3.tgz#3aad9b1eb3e7fe8262820818840bf091e5ae6794"
+  integrity sha512-2XZwja7b6P5q4RZ5FhyX1+f46xi1Z3qBKigLRZ6VTZjwbN0K1IFGMlwm06Uu0Emcre2Z63l77nq/pzn+KxIEoA==
   dependencies:
     estree-walker "^0.5.2"
     micromatch "^2.3.11"
