@@ -1,4 +1,4 @@
-# 💪 fit-html
+# 💪 FitBody-html
 
 [![npm](https://img.shields.io/npm/v/fit-html.svg)](https://www.npmjs.com/package/fit-html)
 [![Travis](https://img.shields.io/travis/Festify/fit-html.svg)](https://travis-ci.org/Festify/fit-html)
