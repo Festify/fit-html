@@ -34,7 +34,7 @@ const todos = (state = [], action) => {
 const store = createStore(todos, ['Use Redux']);
 ```
 
-Define actions and view:
+Define action and view:
 ```js
 function addTodo() {
   return {
@@ -71,7 +71,7 @@ customElements.define('todo-app', withStore(store)(TodosApp));
   <head>
     <title>My cool 💪-html app</title>
   </head>
-  <body>
+  <body bgcolor="grey">
     <todo-app></todo-app>
   </body>
 </html>
